@@ -1,2 +1,2 @@
 # DuoHand
-For dealing with two hand object manipulation scenarios
+Project for understanding scenes involgin two hands manipulating objects
