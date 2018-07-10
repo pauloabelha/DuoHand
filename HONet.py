@@ -47,6 +47,9 @@ class JORNet(VargoNet_class):
             nn.Linear(in_features=200, out_features=self.num_joints * 3), self.use_cuda)
 
     def forward(self, x):
+        (rgbd, obj_id, obj_pose) = x
+
+
         out_intermed_hm1, out_intermed_hm2, out_intermed_hm3, conv4fout, \
         res3aout, res4aout, conv4eout = self.forward_subnet(x)
         out_intermed_hm_main = self.forward_main_loss(conv4fout)
