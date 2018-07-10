@@ -11,4 +11,7 @@ synthom_loader = torch.utils.data.DataLoader(
                                             shuffle=False)
 
 for batch_idx, (data, target) in enumerate(synthom_loader):
-    print(data.shape)
+    (rgbd, obj_id, obj_pose) = data
+    print(rgbd.shape)
+    print(obj_id)
+    print(obj_pose)
