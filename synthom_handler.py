@@ -5,16 +5,47 @@ import numpy as np
 from scipy import misc
 from torch.utils.data.dataset import Dataset
 import os
+from matplotlib import pyplot as plt
+
+def numpy_to_plottable_rgb(numpy_img):
+    img = numpy_img
+    if len(numpy_img.shape) == 3:
+        channel_axis = 0
+        for i in numpy_img.shape:
+            if i == 3 or i == 4:
+                break
+            channel_axis += 1
+        if channel_axis == 0:
+            img = numpy_img.swapaxes(0, 1)
+            img = img.swapaxes(1, 2)
+        elif channel_axis == 1:
+            img = numpy_img.swapaxes(1, 2)
+        elif channel_axis == 2:
+            img = numpy_img
+        else:
+            return None
+        img = img[:, :, 0:3]
+    img = img.swapaxes(0, 1)
+    return img.astype(int)
+
+def plot_image(data, title='', fig=None):
+    if fig is None:
+        fig = plt.figure()
+    data_img_RGB = numpy_to_plottable_rgb(data)
+    plt.imshow(data_img_RGB)
+    if not title == '':
+        plt.title(title)
+    return fig
 
 def change_res_image(image, new_res):
     image = misc.imresize(image, new_res)
     return image
 
-def get_crop_coords(joints_uv, image_rgbd):
-    min_u = min(joints_uv[:, 0]) - 10
-    min_v = min(joints_uv[:, 1]) - 10
-    max_u = max(joints_uv[:, 0]) + 10
-    max_v = max(joints_uv[:, 1]) + 10
+def get_crop_coords(joints_uv, image_rgbd, pixel_add=30):
+    min_u = min(joints_uv[:, 0]) - pixel_add
+    min_v = min(joints_uv[:, 1]) - pixel_add
+    max_u = max(joints_uv[:, 0]) + pixel_add
+    max_v = max(joints_uv[:, 1]) + pixel_add
     u0 = int(max(min_u, 0))
     v0 = int(max(min_v, 0))
     u1 = int(min(max_u, image_rgbd.shape[1]))
@@ -22,6 +53,29 @@ def get_crop_coords(joints_uv, image_rgbd):
     # get coords
     coords = [u0, v0, u1, v1]
     return coords
+
+
+def convert_labels_2D_new_res(color_space_label, orig_img_res, heatmap_res):
+    new_ix_res1 = int(color_space_label[0] /
+                      (orig_img_res[0] / heatmap_res[0]))
+    new_ix_res2 = int(color_space_label[1] /
+                      (orig_img_res[1] / heatmap_res[1]))
+    return np.array([new_ix_res1, new_ix_res2])
+
+def color_space_label_to_heatmap(color_space_label, heatmap_res, orig_img_res=(640, 480)):
+    '''
+    Convert a (u,v) color-space label into a heatmap
+    In this case, the heat map has only one value set to 1
+    That is, the value (u,v)
+    :param color_space_label: a pair (u,v) of color space joint position
+    :param image_res: a pair (U, V) with the values for image resolution
+    :return: numpy array of dimensions image_res with one position set to 1
+    '''
+    SMALL_PROB = 0.0
+    heatmap = np.zeros(heatmap_res) + SMALL_PROB
+    new_label_res = convert_labels_2D_new_res(color_space_label, orig_img_res, heatmap_res)
+    heatmap[new_label_res[0], new_label_res[1]] = 1 - (SMALL_PROB * heatmap.size)
+    return heatmap
 
 def get_labels_cropped_heatmaps(labels_colorspace, joint_ixs, crop_coords, heatmap_res):
     res_transf_u = (heatmap_res[0] / (crop_coords[2] - crop_coords[0]))
@@ -36,7 +90,7 @@ def get_labels_cropped_heatmaps(labels_colorspace, joint_ixs, crop_coords, heatm
         label_v = int(label_crop_local_v * res_transf_v)
         labels_colorspace_mapped[joint_ix, 0] = label_u
         labels_colorspace_mapped[joint_ix, 1] = label_v
-        label = conv.color_space_label_to_heatmap(labels_colorspace_mapped[joint_ix, :], heatmap_res,
+        label = color_space_label_to_heatmap(labels_colorspace_mapped[joint_ix, :], heatmap_res,
                                                      orig_img_res=heatmap_res)
         label = label.astype(float)
         labels_heatmaps[labels_ix, :, :] = label
@@ -61,6 +115,8 @@ def crop_hand_rgbd(joints_uv, image_rgbd, crop_res):
 
 def crop_image_get_labels(data, labels_colorspace, joint_ixs=range(16), crop_res=(128, 128)):
     data, crop_coords = crop_hand_rgbd(labels_colorspace, data, crop_res=crop_res)
+    plot_image(data)
+    plt.show()
     labels_heatmaps, labels_colorspace =\
         get_labels_cropped_heatmaps(labels_colorspace, joint_ixs, crop_coords, heatmap_res=crop_res)
     return data, crop_coords, labels_heatmaps, labels_colorspace
@@ -78,9 +134,11 @@ class Synthom_dataset(Dataset):
     frame_nums = []
     filepaths_depth = {}
 
-    obj_id_of_frame = {}
-    obj_pose_of_frame = {}
-    hand_pose_of_frame = {}
+    obj_id_of_idx = {}
+    obj_pose_of_idx = {}
+    obj_uv_of_idx = {}
+    hand_pose_of_idx = {}
+    hand_uv_of_idx = {}
 
     idx_to_filestruct = {}
     filestruct_to_idx = {}
@@ -97,19 +155,24 @@ class Synthom_dataset(Dataset):
                     image_type = filename.split('_')[1]
                     frame_num = filename.split('_')[2].split('.')[0]
                     if image_type == 'depth':
-                        filestruct = [root, scene, frame_num]
+                        filestruct = '_'.join([root, scene, frame_num])
                         self.idx_to_filestruct[elem_ix] = filestruct
-                        self.filestruct_to_idx['_'.join(filestruct)] = elem_ix
+                        self.filestruct_to_idx[filestruct] = elem_ix
                         elem_ix += 1
+        self.length = elem_ix + 1
 
     def load_rgbd(self, idx):
-        frame_num = self.frame_nums[idx]
+        filestruct = self.idx_to_filestruct[idx]
+        filestruct_split = filestruct.split('_')
+        root_folder = filestruct_split[0]
+        scene_obj = filestruct_split[1]
+        frame_num = filestruct_split[2]
         # read rgb image
-        rgb_filepath = self.root_folder + self.rgb_prefix + str(frame_num) + '.' + self.image_ext
+        rgb_filepath = root_folder + '/' + scene_obj + '_' + self.rgb_prefix + frame_num + '.' + self.image_ext
         rgbd_image = misc.imread(rgb_filepath)
         rgbd_image = rgbd_image.swapaxes(0, 1)
         # read depth image
-        depth_filepath = self.root_folder + self.depth_prefix + str(frame_num) + '.' + self.image_ext
+        depth_filepath = root_folder + '/' + scene_obj + '_' + self.depth_prefix + frame_num + '.' + self.image_ext
         depth_image = misc.imread(depth_filepath)
         depth_image = depth_image.swapaxes(0, 1)
         depth = np.zeros((self.img_res[0], self.img_res[1]))
@@ -122,7 +185,8 @@ class Synthom_dataset(Dataset):
         for root, dirs, files in os.walk(self.root_folder, topdown=True):
             for filename in sorted(files):
                 curr_file_ext = filename.split('.')[1]
-                if curr_file_ext == 'txt' and 'obj_pose' in filename:
+                if curr_file_ext == 'txt' and 'obj_pose_conv' in filename:
+                    scene = filename.split('_')[0]
                     obj_filepath = root + '/' + filename
                     with open(obj_filepath) as f:
                         next(f)
@@ -131,31 +195,45 @@ class Synthom_dataset(Dataset):
                         for line in f:
                             line_split = line.split(',')
                             frame_num = int(line_split[0])
+                            filestruct = '_'.join([root, scene, str(frame_num)])
+                            idx = self.filestruct_to_idx[filestruct]
                             obj_id = int(line_split[1])
                             obj_pose = np.array([float(i) for i in line_split[2:8]])
                             obj_uv = np.array([float(i) for i in line_split[9:10]])
-                            self.obj_id_of_frame[frame_num] = obj_id
-                            self.obj_pose_of_frame[frame_num] = obj_pose
+                            self.obj_id_of_idx[idx] = obj_id
+                            self.obj_pose_of_idx[idx] = obj_pose
+                            self.obj_uv_of_idx[idx] = obj_uv
 
     def fill_hand_poses(self):
-        hand_filepath = self.root_folder + self.hand_file_prefix + '.txt'
-
-        with open(hand_filepath) as f:
-            next(f)
-            next(f)
-            next(f)
-            line = '.'
-            while line != '':
-                hand_pose = np.zeros((self.num_hand_bones, 3))
-                for i in range(self.num_hand_bones - 1):
-                    line = f.readline()
-                    if line == '':
-                        break
-                    line_split = line.split(',')
-                    frame_num = int(line_split[0])
-                    bone_idx = int(line_split[1])
-                    hand_pose[bone_idx, :] = [float(i) for i in line_split[2:]]
-                self.hand_pose_of_frame[frame_num] = hand_pose
+        for root, dirs, files in os.walk(self.root_folder, topdown=True):
+            for filename in sorted(files):
+                curr_file_ext = filename.split('.')[1]
+                if curr_file_ext == 'txt' and 'right_hand_conv' in filename:
+                    scene = filename.split('_')[0]
+                    hand_filepath = root + '/' + filename
+                    with open(hand_filepath) as f:
+                        next(f)
+                        next(f)
+                        next(f)
+                        line = '.'
+                        while line != '':
+                            hand_pose = np.zeros((self.num_hand_bones, 3))
+                            hand_uv = np.zeros((self.num_hand_bones, 2))
+                            for i in range(self.num_hand_bones):
+                                line = f.readline()
+                                if line == '':
+                                    break
+                                line_split = line.split(',')
+                                frame_num = int(line_split[0])
+                                filestruct = '_'.join([root, scene, str(frame_num)])
+                                idx = self.filestruct_to_idx[filestruct]
+                                bone_idx = int(line_split[1])
+                                hand_pose[bone_idx, :] = [float(j) for j in line_split[2:5]]
+                                hand_uv[bone_idx, 0] = int(line_split[5].strip())
+                                hand_uv[bone_idx, 1] = int(line_split[6].strip())
+                            if not line == '':
+                                self.hand_pose_of_idx[idx] = hand_pose
+                                self.hand_uv_of_idx[idx] = hand_uv
 
     def __init__(self, root_folder):
         self.root_folder = root_folder
@@ -165,19 +243,23 @@ class Synthom_dataset(Dataset):
 
     def __getitem__(self, idx):
         rgbd = self.load_rgbd(idx)
-        rgbd = change_res_image(rgbd, new_res=(128, 128))
-        #rgbd, _, _, _ = crop_image_get_labels(rgbd)
-
+        hand_uv = self.hand_uv_of_idx[idx]
+        plot_image(rgbd, title=str(idx))
+        plt.show()
+        #rgbd = change_res_image(rgbd, new_res=(128, 128))
         rgbd = rgbd.swapaxes(1, 2).swapaxes(0, 1)
+        rgbd, crop_coords, _, _ = crop_image_get_labels(rgbd, hand_uv)
+        print(crop_coords)
+
         rgbd = torch.from_numpy(rgbd).float()
-        frame_num = self.frame_nums[idx]
-        obj_id = self.obj_id_of_frame[frame_num]
+
+        obj_id = self.obj_id_of_idx[idx]
         obj_id_prob = np.zeros((self.num_objs, 1))
         obj_id_prob[obj_id] = 1.0
         obj_id_prob = torch.from_numpy(obj_id_prob).float()
-        obj_pose = self.obj_pose_of_frame[frame_num]
+        obj_pose = self.obj_pose_of_idx[idx]
         obj_pose = torch.from_numpy(obj_pose).float()
-        hand_pose = self.hand_pose_of_frame[frame_num]
+        hand_pose = self.hand_pose_of_idx[idx]
         hand_pose = torch.from_numpy(hand_pose).float()
         return (rgbd, obj_id_prob, obj_pose), hand_pose
 
