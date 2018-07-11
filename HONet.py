@@ -1,8 +1,9 @@
-import HALNet as HALNet
+import VargoNet
 from VargoNet import VargoNet as VargoNet_class
 import torch.nn as nn
+from VargoNet import cudafy
 
-class JORNet(VargoNet_class):
+class HONet(VargoNet_class):
     innerprod1_size = 256 * 16 * 16
     crop_res = (128, 128)
     #innerprod1_size = 65536
@@ -11,21 +12,20 @@ class JORNet(VargoNet_class):
         return cudafy(nn.Linear(in_features=innerprod1_size, out_features=200), self.use_cuda)
 
     def map_out_conv(self, in_channels):
-        return cudafy(HALNet.HALNetConvBlock(
+        return cudafy(VargoNet.VargoNetConvBlock(
             kernel_size=3, stride=1, filters=21, in_channels=in_channels, padding=1),
             self.use_cuda)
 
     def __init__(self, params_dict):
-        super(JORNet, self).__init__(params_dict)
+        super(HONet, self).__init__(params_dict)
 
         self.num_joints = 20
-        self.main_loss_conv = cudafy(HALNet.HALNetConvBlock(
+        self.main_loss_conv = cudafy(VargoNet.VargoNetConvBlock(
                 kernel_size=3, stride=1, filters=21, in_channels=256, padding=1),
             self.use_cuda)
         self.main_loss_deconv1 = cudafy(nn.Upsample(size=self.crop_res, mode='bilinear'), self.use_cuda)
         if self.cross_entropy:
-            self.softmax_final = cudafy(HALNet.
-                                        SoftmaxLogProbability2D(), self.use_cuda)
+            self.softmax_final = cudafy(VargoNet.SoftmaxLogProbability2D(), self.use_cuda)
         self.innerproduct1_joint1 = cudafy(
             nn.Linear(in_features=524288, out_features=200), self.use_cuda)
         self.innerproduct2_joint1 = cudafy(
@@ -51,7 +51,7 @@ class JORNet(VargoNet_class):
 
 
         out_intermed_hm1, out_intermed_hm2, out_intermed_hm3, conv4fout, \
-        res3aout, res4aout, conv4eout = self.forward_subnet(x)
+        res3aout, res4aout, conv4eout = self.forward_subnet(rgbd)
         out_intermed_hm_main = self.forward_main_loss(conv4fout)
         innerprod1_size = res3aout.shape[1] * res3aout.shape[2] * res3aout.shape[3]
         out_intermed_j1 = res3aout.view(-1, innerprod1_size)
