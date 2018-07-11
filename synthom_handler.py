@@ -82,21 +82,25 @@ class Synthom_dataset(Dataset):
     obj_pose_of_frame = {}
     hand_pose_of_frame = {}
 
-    def fill_filepaths(self):
+    idx_to_filestruct = {}
+    filestruct_to_idx = {}
+
+    def fill_idx_to_filestruct(self):
         self.filepaths_rgb = {}
         self.filepaths_depth = {}
+        elem_ix = 0
         for root, dirs, files in os.walk(self.root_folder, topdown=True):
             for filename in sorted(files):
                 curr_file_ext = filename.split('.')[1]
                 if curr_file_ext == self.image_ext:
-                    frame_num = int(filename.split('_')[1].split('.')[0])
-                    self.frame_nums.append(frame_num)
-                    if filename[0:3] == 'rgb':
-                        self.filepaths_rgb[frame_num] = filename
-                    if filename[0:5] == 'depth':
-                        self.filepaths_depth[frame_num] = filename
-        self.frame_nums = sorted(self.frame_nums)
-        self.length = len(self.frame_nums)
+                    scene = filename.split('_')[0]
+                    image_type = filename.split('_')[1]
+                    frame_num = filename.split('_')[2].split('.')[0]
+                    if image_type == 'depth':
+                        filestruct = [root, scene, frame_num]
+                        self.idx_to_filestruct[elem_ix] = filestruct
+                        self.filestruct_to_idx['_'.join(filestruct)] = elem_ix
+                        elem_ix += 1
 
     def load_rgbd(self, idx):
         frame_num = self.frame_nums[idx]
@@ -115,18 +119,23 @@ class Synthom_dataset(Dataset):
         return rgbd_image
 
     def fill_obj_poses(self):
-        obj_filepath = self.root_folder + self.obj_file_prefix + '.txt'
-        with open(obj_filepath) as f:
-            next(f)
-            next(f)
-            next(f)
-            for line in f:
-                line_split = line.split(',')
-                frame_num = int(line_split[0])
-                obj_id = int(line_split[1])
-                obj_pose = np.array([float(i) for i in line_split[2:]])
-                self.obj_id_of_frame[frame_num] = obj_id
-                self.obj_pose_of_frame[frame_num] = obj_pose
+        for root, dirs, files in os.walk(self.root_folder, topdown=True):
+            for filename in sorted(files):
+                curr_file_ext = filename.split('.')[1]
+                if curr_file_ext == 'txt' and 'obj_pose' in filename:
+                    obj_filepath = root + '/' + filename
+                    with open(obj_filepath) as f:
+                        next(f)
+                        next(f)
+                        next(f)
+                        for line in f:
+                            line_split = line.split(',')
+                            frame_num = int(line_split[0])
+                            obj_id = int(line_split[1])
+                            obj_pose = np.array([float(i) for i in line_split[2:8]])
+                            obj_uv = np.array([float(i) for i in line_split[9:10]])
+                            self.obj_id_of_frame[frame_num] = obj_id
+                            self.obj_pose_of_frame[frame_num] = obj_pose
 
     def fill_hand_poses(self):
         hand_filepath = self.root_folder + self.hand_file_prefix + '.txt'
@@ -150,7 +159,7 @@ class Synthom_dataset(Dataset):
 
     def __init__(self, root_folder):
         self.root_folder = root_folder
-        self.fill_filepaths()
+        self.fill_idx_to_filestruct()
         self.fill_obj_poses()
         self.fill_hand_poses()
 

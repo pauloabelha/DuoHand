@@ -4,7 +4,7 @@ from torch.autograd import Variable
 from HONet import HONet
 
 
-root_folder = '/home/paulo/Dropbox/postdoc/papers/EECV_Hands/Output/'
+root_folder = '/home/paulo/MockDataset1/'
 
 synthom_dataset = synthom_handler.Synthom_dataset(root_folder)
 synthom_loader = torch.utils.data.DataLoader(

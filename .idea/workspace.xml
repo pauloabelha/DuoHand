@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0d60f2c3-e7d7-43b4-908c-8c59922a49ce" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/HONet.py" beforeDir="false" afterPath="$PROJECT_DIR$/HONet.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess_raw_synthom.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess_raw_synthom.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/synthom_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/synthom_handler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_honet.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_honet.py" afterDir="false" />
@@ -19,8 +18,8 @@
       <file leaf-file-name="test_honet.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test_honet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="20" selection-start-line="20" selection-end-line="20" />
+            <state relative-caret-position="120">
+              <caret line="8" selection-start-line="8" selection-end-line="8" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -28,11 +27,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HONet.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="HONet.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/HONet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="264">
-              <caret line="62" column="68" lean-forward="true" selection-start-line="62" selection-start-column="68" selection-end-line="62" selection-end-column="68" />
+            <state relative-caret-position="573">
+              <caret line="50" lean-forward="true" selection-start-line="50" selection-end-line="50" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -61,8 +60,8 @@
       <file leaf-file-name="synthom_handler.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/synthom_handler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="178">
-              <caret line="100" column="8" selection-start-line="100" selection-start-column="8" selection-end-line="100" selection-end-column="8" />
+            <state relative-caret-position="393">
+              <caret line="142" column="38" lean-forward="true" selection-start-line="142" selection-start-column="38" selection-end-line="142" selection-end-column="38" />
               <folding>
                 <element signature="e#55#67#0" expanded="true" />
               </folding>
@@ -70,20 +69,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dataloader.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/anaconda3/envs/deeplearning_env/lib/python3.6/site-packages/torch/utils/data/dataloader.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="208">
-              <caret line="263" selection-start-line="263" selection-end-line="263" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="preprocess_raw_synthom.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="preprocess_raw_synthom.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/preprocess_raw_synthom.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="52" column="32" selection-start-line="52" selection-start-column="32" selection-end-line="52" selection-end-column="32" />
+            <state relative-caret-position="204">
+              <caret line="108" column="36" selection-start-line="108" selection-start-column="36" selection-end-line="108" selection-end-column="36" />
             </state>
           </provider>
         </entry>
@@ -99,7 +89,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>num_heatmaps</find>
       <find>as_tor</find>
       <find>from_numpy</find>
       <find>run_until_curr_iter</find>
@@ -129,6 +118,7 @@
       <find>HONetConvBlock</find>
       <find>HALNet.HALNetConvBlock</find>
       <find>VargoNet_class.</find>
+      <find>filepaths</find>
     </findStrings>
     <replaceStrings>
       <replace>num_heatmaps</replace>
@@ -160,10 +150,10 @@
         <option value="$USER_HOME$/muellericcv2017/synthhands_handler.py" />
         <option value="$USER_HOME$/muellericcv2017/losses.py" />
         <option value="$PROJECT_DIR$/validate_vargonet.py" />
-        <option value="$PROJECT_DIR$/preprocess_raw_synthom.py" />
-        <option value="$PROJECT_DIR$/test_honet.py" />
         <option value="$PROJECT_DIR$/HONet.py" />
+        <option value="$PROJECT_DIR$/test_honet.py" />
         <option value="$PROJECT_DIR$/synthom_handler.py" />
+        <option value="$PROJECT_DIR$/preprocess_raw_synthom.py" />
       </list>
     </option>
   </component>
@@ -216,7 +206,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.test_honet">
+  <component name="RunManager" selected="Python.preprocess_raw_synthom">
     <configuration name="preprocess_raw_synthom" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="DuoHand" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -297,8 +287,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.test_honet" />
         <item itemvalue="Python.preprocess_raw_synthom" />
+        <item itemvalue="Python.test_honet" />
         <item itemvalue="Python.train_vargonet" />
       </list>
     </recent_temporary>
@@ -323,12 +313,12 @@
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24959569" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.38422132" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.38422132" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.39959016" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3135246" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32991803" />
@@ -368,11 +358,21 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="67" />
+      <option name="time" value="119" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="breakpointCondition">
+      <expression>
+        <expression-string>len(line_split) == 1</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(line_split) == 2</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>frame_num == 105</expression-string>
         <language-id>Python</language-id>
@@ -724,27 +724,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/anaconda3/envs/deeplearning_env/lib/python3.6/codecs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="308" selection-start-line="308" selection-end-line="308" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/preprocess_raw_synthom.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="52" column="32" selection-start-line="52" selection-start-column="32" selection-end-line="52" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/envs/deeplearning_env/lib/python3.6/site-packages/torch/utils/data/dataloader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="263" selection-start-line="263" selection-end-line="263" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/VargoNet.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-375">
@@ -759,33 +738,54 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/synthom_handler.py">
+    <entry file="file://$PROJECT_DIR$/HONet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="100" column="8" selection-start-line="100" selection-start-column="8" selection-end-line="100" selection-end-column="8" />
+        <state relative-caret-position="573">
+          <caret line="50" lean-forward="true" selection-start-line="50" selection-end-line="50" />
           <folding>
-            <element signature="e#55#67#0" expanded="true" />
+            <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test_honet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="20" selection-start-line="20" selection-end-line="20" />
+        <state relative-caret-position="120">
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/HONet.py">
+    <entry file="file://$USER_HOME$/anaconda3/envs/deeplearning_env/lib/python3.6/site-packages/torch/utils/data/dataloader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="62" column="68" lean-forward="true" selection-start-line="62" selection-start-column="68" selection-end-line="62" selection-end-column="68" />
+        <state relative-caret-position="208">
+          <caret line="263" selection-start-line="263" selection-end-line="263" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/synthom_handler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="393">
+          <caret line="142" column="38" lean-forward="true" selection-start-line="142" selection-start-column="38" selection-end-line="142" selection-end-column="38" />
           <folding>
-            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#55#67#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/envs/deeplearning_env/lib/python3.6/codecs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="308" selection-start-line="308" selection-end-line="308" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/preprocess_raw_synthom.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="108" column="36" selection-start-line="108" selection-start-column="36" selection-end-line="108" selection-end-column="36" />
         </state>
       </provider>
     </entry>
