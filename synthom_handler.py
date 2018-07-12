@@ -142,6 +142,8 @@ class Synthom_dataset(Dataset):
     frame_nums = []
     filepaths_depth = {}
 
+    get_rand_idx = []
+
     obj_id_of_idx = {}
     obj_pose_of_idx = {}
     obj_uv_of_idx = {}
@@ -167,7 +169,9 @@ class Synthom_dataset(Dataset):
                         self.idx_to_filestruct[elem_ix] = filestruct
                         self.filestruct_to_idx[filestruct] = elem_ix
                         elem_ix += 1
-        self.length = elem_ix + 1
+        self.length = elem_ix
+        self.get_rand_idx = np.array(list(range(self.length)))
+        np.random.shuffle(self.get_rand_idx)
 
     def load_rgbd(self, idx):
         filestruct = self.idx_to_filestruct[idx]
@@ -178,12 +182,12 @@ class Synthom_dataset(Dataset):
         # read rgb image
         rgb_filepath = root_folder + '/' + scene_obj + '_' + self.rgb_prefix + frame_num + '.' + self.image_ext
         rgbd_image = misc.imread(rgb_filepath)
-        rgbd_image = rgbd_image.swapaxes(0, 1)
+        rgbd_image = rgbd_image.swapaxes(0, 1).astype(float)
         # read depth image
         depth_filepath = root_folder + '/' + scene_obj + '_' + self.depth_prefix + frame_num + '.' + self.image_ext
         depth_image = misc.imread(depth_filepath)
         depth_image = depth_image.swapaxes(0, 1)
-        depth = np.zeros((self.img_res[0], self.img_res[1]))
+        depth = np.zeros((self.img_res[0], self.img_res[1])).astype(float)
         for depth_channel in range(2):
             depth += depth_image[:, :, depth_channel] / np.power(255, depth_channel + 1)
         rgbd_image[:, :, 3] = depth
@@ -250,6 +254,7 @@ class Synthom_dataset(Dataset):
         self.fill_hand_poses()
 
     def __getitem__(self, idx):
+        idx = self.get_rand_idx[idx]
         rgbd = self.load_rgbd(idx)
         hand_uv = self.hand_uv_of_idx[idx]
         #plot_image(rgbd, title=str(idx))
@@ -268,7 +273,7 @@ class Synthom_dataset(Dataset):
         obj_pose = torch.from_numpy(obj_pose).float()
         hand_pose = self.hand_pose_of_idx[idx]
         hand_pose = torch.from_numpy(hand_pose).float()
-        target_hand_pose = hand_pose.reshape((hand_pose.shape[0] * 3, 1))
+        target_hand_pose = hand_pose.reshape((hand_pose.shape[0] * 3,))
         return (rgbd, obj_id_prob, obj_pose), (target_hand_pose, target_heatmaps)
 
     def __len__(self):
