@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0d60f2c3-e7d7-43b4-908c-8c59922a49ce" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/train_honet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HONet.py" beforeDir="false" afterPath="$PROJECT_DIR$/HONet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VargoNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/VargoNet.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocess_raw_synthom.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess_raw_synthom.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/synthom_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/synthom_handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_honet.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_honet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_honet.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -15,11 +18,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="synthom_handler.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="synthom_handler.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/synthom_handler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="253" column="45" lean-forward="true" selection-start-line="253" selection-start-column="45" selection-end-line="253" selection-end-column="45" />
+            <state relative-caret-position="362">
+              <caret line="271" selection-start-line="271" selection-end-line="271" />
               <folding>
                 <element signature="e#56#68#0" expanded="true" />
               </folding>
@@ -27,11 +30,44 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dataloader.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/anaconda3/envs/deeplearning_env/lib/python3.6/site-packages/torch/utils/data/dataloader.py">
+      <file leaf-file-name="train_honet.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/train_honet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="328">
-              <caret line="263" selection-start-line="263" selection-end-line="263" />
+            <state relative-caret-position="338">
+              <caret line="70" column="4" selection-start-line="70" selection-start-column="4" selection-end-line="70" selection-end-column="4" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="VargoNet.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/VargoNet.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="135">
+              <caret line="140" column="21" selection-start-line="140" selection-start-column="21" selection-end-line="140" selection-end-column="21" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="codecs.py" pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/anaconda3/envs/deeplearning_env/lib/python3.6/codecs.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="208">
+              <caret line="308" selection-start-line="308" selection-end-line="308" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HONet.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/HONet.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="345">
+              <caret line="23" column="61" lean-forward="true" selection-start-line="23" selection-start-column="61" selection-end-line="23" selection-end-column="61" />
+              <folding>
+                <element signature="e#0#15#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -47,14 +83,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>joint</find>
-      <find>target_heatmaps</find>
-      <find>validator</find>
-      <find>validator.</find>
-      <find>joint_ixs</find>
-      <find>losses</find>
-      <find>my_losses.</find>
-      <find>converter.</find>
       <find>visualize.</find>
       <find>display_est_time_loop</find>
       <find>_bound</find>
@@ -77,6 +105,14 @@
       <find>crop_coord</find>
       <find>hand_uv_of_idx</find>
       <find>crop_image_get_labels</find>
+      <find>pixel_</find>
+      <find>plot</find>
+      <find>plt.show</find>
+      <find>print(</find>
+      <find>idx_to_filestruct</find>
+      <find>loss_f</find>
+      <find>loss_func</find>
+      <find>cuda</find>
     </findStrings>
     <replaceStrings>
       <replace>num_heatmaps</replace>
@@ -102,16 +138,16 @@
         <option value="$PROJECT_DIR$/muellericcv2017_importer.py" />
         <option value="$USER_HOME$/muellericcv2017/io_image.py" />
         <option value="$USER_HOME$/muellericcv2017/trainer.py" />
-        <option value="$PROJECT_DIR$/VargoNet.py" />
         <option value="$PROJECT_DIR$/train_vargonet.py" />
         <option value="$USER_HOME$/muellericcv2017/validate_halnet.py" />
         <option value="$USER_HOME$/muellericcv2017/synthhands_handler.py" />
         <option value="$USER_HOME$/muellericcv2017/losses.py" />
         <option value="$PROJECT_DIR$/validate_vargonet.py" />
         <option value="$PROJECT_DIR$/HONet.py" />
-        <option value="$PROJECT_DIR$/test_honet.py" />
         <option value="$PROJECT_DIR$/preprocess_raw_synthom.py" />
+        <option value="$PROJECT_DIR$/VargoNet.py" />
         <option value="$PROJECT_DIR$/synthom_handler.py" />
+        <option value="$PROJECT_DIR$/test_honet.py" />
       </list>
     </option>
   </component>
@@ -195,7 +231,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_honet.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/train_honet.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -271,12 +307,12 @@
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24959569" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.38422132" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.34221312" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.38934427" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.40061477" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32991803" />
@@ -308,11 +344,6 @@
           <line>66</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/synthom_handler.py</url>
-          <line>253</line>
-          <option name="timeStamp" value="181" />
-        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
@@ -321,11 +352,16 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="182" />
+      <option name="time" value="220" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="breakpointCondition">
+      <expression>
+        <expression-string>idx == 8</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>float(line_split[5]) &lt; 0.5</expression-string>
         <language-id>Python</language-id>
@@ -706,51 +742,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/VargoNet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-375">
-          <caret line="149" column="30" lean-forward="true" selection-start-line="149" selection-start-column="30" selection-end-line="149" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda3/envs/deeplearning_env/lib/python3.6/site-packages/torch/nn/modules/module.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="209">
           <caret line="490" selection-start-line="490" selection-end-line="490" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/HONet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="573">
-          <caret line="50" lean-forward="true" selection-start-line="50" selection-end-line="50" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_honet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/envs/deeplearning_env/lib/python3.6/codecs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="308" selection-start-line="308" selection-end-line="308" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/preprocess_raw_synthom.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1785">
-          <caret line="119" selection-start-line="119" selection-end-line="119" />
         </state>
       </provider>
     </entry>
@@ -761,12 +756,53 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/preprocess_raw_synthom.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="119" selection-start-line="119" selection-end-line="119" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/envs/deeplearning_env/lib/python3.6/codecs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="308" selection-start-line="308" selection-end-line="308" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/synthom_handler.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="253" column="45" lean-forward="true" selection-start-line="253" selection-start-column="45" selection-end-line="253" selection-end-column="45" />
+        <state relative-caret-position="362">
+          <caret line="271" selection-start-line="271" selection-end-line="271" />
           <folding>
             <element signature="e#56#68#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/HONet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="23" column="61" lean-forward="true" selection-start-line="23" selection-start-column="61" selection-end-line="23" selection-end-column="61" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VargoNet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="140" column="21" selection-start-line="140" selection-start-column="21" selection-end-line="140" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/train_honet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="338">
+          <caret line="70" column="4" selection-start-line="70" selection-start-column="4" selection-end-line="70" selection-end-column="4" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>

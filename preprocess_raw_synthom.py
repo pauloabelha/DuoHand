@@ -7,6 +7,8 @@ right_hand_conv_filename = 'right_hand_' + 'conv' + '.txt'
 objpose_file = 'obj_pose.txt'
 objpose_conv_file = 'obj_pose_' + 'conv' + '.txt'
 
+Z_handpose_threshold = 200
+
 bone_name_list = ['hand_r',
                   'thumb_r',
                   'thumb_r_001',
@@ -35,9 +37,12 @@ def map_bone_name_to_index(bone_name):
 def map_obj_name_to_index(obj_name):
     return obj_name_list.index(obj_name)
 
+
+
 ix = 0
 subfolder_names = []
 subfolder_to_convlines = {}
+frames_to_disconsider = {}
 for root, dirs, files in os.walk(root_folder, topdown=True):
     if ix == 0:
         ix += 1
@@ -62,12 +67,31 @@ for root, dirs, files in os.walk(root_folder, topdown=True):
                     x_loc = location[0].split('=')[1]
                     y_loc = location[1].split('=')[1]
                     z_loc = location[2].split('=')[1]
-                    uv_coords = location = line_split[3].strip().split(' ')
-                    u_coord = str(int(float(uv_coords[0].split('=')[1])))
-                    v_coord = str(int(float(uv_coords[1].split('=')[1])))
-                    converted_lines.append(frame_num + ',' + str(bone_index) +
-                                           ',' + x_loc + ',' + y_loc + ',' + z_loc +
-                                           ',' + u_coord + ',' + v_coord)
+                    if float(z_loc) < Z_handpose_threshold:
+                        # in this case, this pose and its image should not be considered
+                        # that is, we should delete the corresponding RGB and Depth images
+                        obj_name = filename.split('_')[0]
+                        rgb_to_remove_filepath = root + '/' + obj_name + '_rgb_' + frame_num + '.png'
+                        try:
+                            a = frames_to_disconsider[root]
+                            frames_to_disconsider[root][frame_num] = 1
+                        except:
+                            frames_to_disconsider[root] = {}
+                        try:
+                            os.remove(rgb_to_remove_filepath)
+                        except:
+                            a = 0
+                        depth_to_remove_filepath = root + '/' + obj_name + '_depth_' + frame_num + '.png'
+                        try:
+                            os.remove(depth_to_remove_filepath)
+                        except:
+                            a = 0
+                    else:
+                        uv_coords = location = line_split[3].strip().split(' ')
+                        u_coord = str(int(float(uv_coords[0].split('=')[1])))
+                        v_coord = str(int(float(uv_coords[1].split('=')[1])))
+                        converted_line = frame_num + ',' + str(bone_index) + ',' + x_loc + ',' + y_loc + ',' + z_loc + ',' + u_coord + ',' + v_coord
+                        converted_lines.append(converted_line)
                 subfolder_to_convlines[subfolder_names[-1]] = converted_lines
                 break
 
@@ -95,7 +119,6 @@ for root, dirs, files in os.walk(root_folder, topdown=True):
                 converted_lines.append('frame,obj_name,x_loc,y_loc,z_loc,roll,pitch,yaw')
                 for line in f:
                     line_split = line.split(',')
-                    print(line_split)
                     frame_num = line_split[0]
                     obj_name = line_split[1].strip()
                     obj_id = map_obj_name_to_index(obj_name)
@@ -107,13 +130,18 @@ for root, dirs, files in os.walk(root_folder, topdown=True):
                     x_loc = location[0].split('=')[1]
                     y_loc = location[1].split('=')[1]
                     z_loc = location[2].split('=')[1]
-                    uv_coords = line_split[4].strip().split(' ')
-                    u_coord = str(int(float(uv_coords[0].split('=')[1])))
-                    v_coord = str(int(float(uv_coords[1].split('=')[1])))
-                    converted_lines.append(frame_num + ',' + str(obj_id) +
-                                           ',' + x_loc + ',' + y_loc + ',' + z_loc +
-                                           ',' + roll + ',' + pitch + ',' + yaw +
-                                           ',' + u_coord + ',' + v_coord)
+                    frames_disc = frames_to_disconsider[root].keys()
+                    if frame_num in frames_disc:
+                        # this obj pose should not be considered as there is no hand in the image
+                        a = 0
+                    else:
+                        uv_coords = line_split[4].strip().split(' ')
+                        u_coord = str(int(float(uv_coords[0].split('=')[1])))
+                        v_coord = str(int(float(uv_coords[1].split('=')[1])))
+                        converted_lines.append(frame_num + ',' + str(obj_id) +
+                                               ',' + x_loc + ',' + y_loc + ',' + z_loc +
+                                               ',' + roll + ',' + pitch + ',' + yaw +
+                                               ',' + u_coord + ',' + v_coord)
                 subfolder_to_convlines[subfolder_names[-1]] = converted_lines
                 break
 

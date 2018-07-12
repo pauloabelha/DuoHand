@@ -138,7 +138,7 @@ class VargoNet(nn.Module):
 
     cross_entropy = True
     heatmap_ixs = range(3)
-    num_heatmaps = 3
+    num_heatmaps = 16
     use_cuda = None
     WEIGHT_LOSS_INTERMED1 = 0.5
     WEIGHT_LOSS_INTERMED2 = 0.5

@@ -41,11 +41,19 @@ def change_res_image(image, new_res):
     image = misc.imresize(image, new_res)
     return image
 
-def get_crop_coords(joints_uv, image_rgbd, pixel_add=30):
-    min_u = min(joints_uv[:, 0]) - pixel_add
-    min_v = min(joints_uv[:, 1]) - pixel_add
-    max_u = max(joints_uv[:, 0]) + pixel_add
-    max_v = max(joints_uv[:, 1]) + pixel_add
+def get_crop_coords(joints_uv, image_rgbd, pixel_mult=1.5):
+    min_u = min(joints_uv[:, 0])
+    min_v = min(joints_uv[:, 1])
+    max_u = max(joints_uv[:, 0])
+    max_v = max(joints_uv[:, 1])
+    u_size = max_u - min_u
+    v_size = max_v - min_v
+    u_pixel_add = u_size * (pixel_mult - 1)
+    v_pixel_add = v_size * (pixel_mult - 1)
+    min_u -= u_pixel_add
+    min_v -= v_pixel_add
+    max_u += u_pixel_add
+    max_v += v_pixel_add
     u0 = int(max(min_u, 0))
     v0 = int(max(min_v, 0))
     u1 = int(min(max_u, image_rgbd.shape[1]))
@@ -115,8 +123,8 @@ def crop_hand_rgbd(joints_uv, image_rgbd, crop_res):
 
 def crop_image_get_labels(data, labels_colorspace, joint_ixs=range(16), crop_res=(128, 128)):
     data, crop_coords = crop_hand_rgbd(labels_colorspace, data, crop_res=crop_res)
-    plot_image(data)
-    plt.show()
+    #plot_image(data)
+    #plt.show()
     labels_heatmaps, labels_colorspace =\
         get_labels_cropped_heatmaps(labels_colorspace, joint_ixs, crop_coords, heatmap_res=crop_res)
     return data, crop_coords, labels_heatmaps, labels_colorspace
@@ -244,14 +252,13 @@ class Synthom_dataset(Dataset):
     def __getitem__(self, idx):
         rgbd = self.load_rgbd(idx)
         hand_uv = self.hand_uv_of_idx[idx]
-        plot_image(rgbd, title=str(idx))
-        plt.show()
+        #plot_image(rgbd, title=str(idx))
+        #plt.show()
         #rgbd = change_res_image(rgbd, new_res=(128, 128))
         rgbd = rgbd.swapaxes(1, 2).swapaxes(0, 1)
-        rgbd, crop_coords, _, _ = crop_image_get_labels(rgbd, hand_uv)
-        print(crop_coords)
-
+        rgbd, crop_coords, target_heatmaps, _ = crop_image_get_labels(rgbd, hand_uv)
         rgbd = torch.from_numpy(rgbd).float()
+        target_heatmaps = torch.from_numpy(target_heatmaps).float()
 
         obj_id = self.obj_id_of_idx[idx]
         obj_id_prob = np.zeros((self.num_objs, 1))
@@ -261,7 +268,8 @@ class Synthom_dataset(Dataset):
         obj_pose = torch.from_numpy(obj_pose).float()
         hand_pose = self.hand_pose_of_idx[idx]
         hand_pose = torch.from_numpy(hand_pose).float()
-        return (rgbd, obj_id_prob, obj_pose), hand_pose
+        target_hand_pose = hand_pose.reshape((hand_pose.shape[0] * 3, 1))
+        return (rgbd, obj_id_prob, obj_pose), (target_hand_pose, target_heatmaps)
 
     def __len__(self):
         return self.length
