@@ -88,7 +88,7 @@ class HONet(VargoNet_class):
         innerprod1_size = conv4fout.shape[1] * conv4fout.shape[2] * conv4fout.shape[3]
         out_intermed_j_main = conv4fout.view(-1, innerprod1_size)
         out_intermed_j_main = self.innerproduct1_joint_main(out_intermed_j_main)
-        out_intermed_j_main = self.innerproduct2_join_main(out_intermed_j_main)
+        #out_intermed_j_main = self.innerproduct2_join_main(out_intermed_j_main)
 
         # put object in the net
         obj_in = torch.cat((obj_id, obj_pose), 1)

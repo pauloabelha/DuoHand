@@ -147,6 +147,9 @@ class Synthom_dataset(Dataset):
     frame_nums = []
     filepaths_depth = {}
 
+    min_obj_pose = 0
+    max_obj_pose = 0
+
     get_rand_idx = []
 
     obj_gt_of_idx = {}
@@ -161,6 +164,8 @@ class Synthom_dataset(Dataset):
         self.filepaths_depth = {}
         ix = 0
         idx_elem = 0
+        min_obj_pose = [10000] * 6
+        max_obj_pose = [-10000] * 6
         for root, dirs, files in os.walk(self.root_folder, topdown=True):
             if ix == 0:
                 ix += 1
@@ -190,7 +195,20 @@ class Synthom_dataset(Dataset):
 
                         obj_id = int(line_split[1])
                         obj_pose = np.array([float(i) for i in line_split[2:8]])
+
                         obj_uv = np.array([float(i) for i in line_split[8:10]])
+                        if obj_pose[0] < 0 or obj_pose[1] < 0 or obj_pose[2] < 270 \
+                                or obj_uv[0] < 0 or obj_uv[1] < 0:
+                            obj_line = obj_file.readline()
+                            for i in range(self.num_hand_bones):
+                                hand_file.readline()
+                            continue
+                        for i in range(6):
+                            if obj_pose[i] < min_obj_pose[i]:
+                                min_obj_pose[i] = obj_pose[i]
+                            if obj_pose[i] > max_obj_pose[i]:
+                                max_obj_pose[i] = obj_pose[i]
+
                         self.obj_gt_of_idx[idx_elem] = (obj_id, obj_pose, obj_uv)
 
                         hand_pose = np.zeros((self.num_hand_bones, 3))
@@ -202,7 +220,11 @@ class Synthom_dataset(Dataset):
                             line_split = hand_line.split(',')
                             hand_frame_num = int(line_split[0])
                             if not hand_frame_num == obj_frame_num:
-                                raise Exception('Hand and object files are inconsistent!\n{}\n{}'.format(hand_gt_filepath, obj_gt_filepath))
+                                obj_line = obj_file.readline()
+                                for i in range(self.num_hand_bones):
+                                    hand_file.readline()
+                                #raise Exception('Hand and object files are inconsistent!\n{}\n{}\n{}\n{}'.
+                                #                format(hand_gt_filepath, obj_gt_filepath, obj_line, hand_line))
                             bone_idx = int(line_split[1])
                             hand_pose[bone_idx, :] = [float(j) for j in line_split[2:5]]
                             hand_uv[bone_idx, 0] = int(line_split[5].strip())
@@ -210,6 +232,8 @@ class Synthom_dataset(Dataset):
                         self.hand_gt_of_idx[idx_elem] = (hand_pose, hand_uv)
                         obj_line = obj_file.readline()
                         idx_elem += 1
+        self.min_obj_pose = np.array(min_obj_pose)
+        self.max_obj_pose = np.array(max_obj_pose)
         self.length = idx_elem - 1
         self.get_rand_idx = list(range(self.length))
         np.random.shuffle(self.get_rand_idx)
@@ -242,6 +266,8 @@ class Synthom_dataset(Dataset):
                 self.hand_gt_of_idx = dataset_dict['hand_gt_of_idx']
                 self.rgb_filepath_of_idx = dataset_dict['rgb_filepath_of_idx']
                 self.depth_filepath_of_idx = dataset_dict['depth_filepath_of_idx']
+                self.max_obj_pose = dataset_dict['max_obj_pose']
+                self.min_obj_pose = dataset_dict['min_obj_pose']
         elif type == 'train':
             if load:
                 print('Loading dataset from file')
@@ -254,6 +280,8 @@ class Synthom_dataset(Dataset):
                     self.hand_gt_of_idx = dataset_dict['hand_gt_of_idx']
                     self.rgb_filepath_of_idx = dataset_dict['rgb_filepath_of_idx']
                     self.depth_filepath_of_idx = dataset_dict['depth_filepath_of_idx']
+                    self.max_obj_pose = dataset_dict['max_obj_pose']
+                    self.min_obj_pose = dataset_dict['min_obj_pose']
             else:
                 print('Creating new dataset split')
                 self.fillall()
@@ -266,8 +294,11 @@ class Synthom_dataset(Dataset):
                                   'obj_gt_of_idx': self.obj_gt_of_idx,
                                   'hand_gt_of_idx': self.hand_gt_of_idx,
                                   'rgb_filepath_of_idx': self.rgb_filepath_of_idx,
-                                  'depth_filepath_of_idx': self.depth_filepath_of_idx}
+                                  'depth_filepath_of_idx': self.depth_filepath_of_idx,
+                                    'min_obj_pose': self.min_obj_pose,
+                                    'max_obj_pose': self.max_obj_pose}
                     pickle.dump(dataset_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
 
     def __getitem__(self, idx):
         idx = self.get_rand_idx[idx]
@@ -278,9 +309,11 @@ class Synthom_dataset(Dataset):
         obj_id_prob[obj_id] = 1.0
         obj_id_prob = torch.from_numpy(obj_id_prob).float()
         obj_orient = obj_pose[3:].reshape((3,))
+        obj_orient = (obj_orient + 180.) / 360.
         obj_orient = torch.from_numpy(obj_orient).float()
         obj_uv = torch.from_numpy(obj_uv).float()
         obj_position = obj_pose[0:3].reshape((3,))
+        obj_position = (self.max_obj_pose[0:3] - obj_position) / (self.max_obj_pose[0:3] - self.min_obj_pose[0:3])
         obj_position = torch.from_numpy(obj_position).float()
         obj_pose = torch.cat((obj_position, obj_uv, obj_orient), 0)
 

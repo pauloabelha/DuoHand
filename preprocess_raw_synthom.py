@@ -1,7 +1,7 @@
 import os
 
 scene_name = 'woodblock'
-root_folder = '/home/paulo/HOMDataset/'
+root_folder = '/home/paulo/Output/'
 right_hand_filename = 'right_hand.txt'
 right_hand_conv_filename = 'right_hand_' + 'conv' + '.txt'
 objpose_file = 'obj_pose.txt'

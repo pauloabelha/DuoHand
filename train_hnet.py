@@ -4,8 +4,8 @@ from torch.autograd import Variable
 from HNet import HNet
 import torch.optim as optim
 
-root_folder = '/home/paulo/HOMDataset/'
-load_filepath = '/home/paulo/DuoHand/trained_hnet.pth.tar'
+root_folder = '/home/paulo/Output/'
+load_filepath = ''#'/home/paulo/DuoHand/trained_hnet.pth.tar'
 use_cuda = False
 batch_size = 4
 
@@ -94,7 +94,7 @@ def load_checkpoint(filename, params_dict, use_cuda=False):
     print('Starting at batch: {}'.format(start_batch_idx))
     return model, optimizer, start_batch_idx
 
-synthom_dataset = synthom_handler.Synthom_dataset(root_folder, type='train')
+synthom_dataset = synthom_handler.Synthom_dataset(root_folder, type='train', load=False)
 synthom_loader = torch.utils.data.DataLoader(
                                             synthom_dataset,
                                             batch_size=batch_size,
