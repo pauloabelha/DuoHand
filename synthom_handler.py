@@ -1,6 +1,7 @@
 # handler for ECCV HANDS 2018 Workshop Synthom Dataset
 
 import torch
+import pickle
 import numpy as np
 from scipy import misc
 from torch.utils.data.dataset import Dataset
@@ -82,6 +83,10 @@ def color_space_label_to_heatmap(color_space_label, heatmap_res, orig_img_res=(6
     SMALL_PROB = 0.0
     heatmap = np.zeros(heatmap_res) + SMALL_PROB
     new_label_res = convert_labels_2D_new_res(color_space_label, orig_img_res, heatmap_res)
+    new_label_res[0] = max(0, new_label_res[0])
+    new_label_res[1] = max(0, new_label_res[1])
+    new_label_res[0] = min(heatmap_res[0] - 1, new_label_res[0])
+    new_label_res[1] = min(heatmap_res[1] - 1, new_label_res[1])
     heatmap[new_label_res[0], new_label_res[1]] = 1 - (SMALL_PROB * heatmap.size)
     return heatmap
 
@@ -144,47 +149,78 @@ class Synthom_dataset(Dataset):
 
     get_rand_idx = []
 
-    obj_id_of_idx = {}
-    obj_pose_of_idx = {}
-    obj_uv_of_idx = {}
-    hand_pose_of_idx = {}
-    hand_uv_of_idx = {}
+    obj_gt_of_idx = {}
+    hand_gt_of_idx = {}
+    rgb_filepath_of_idx = {}
+    depth_filepath_of_idx = {}
 
-    idx_to_filestruct = {}
-    filestruct_to_idx = {}
+    train_split_size = 0
 
-    def fill_idx_to_filestruct(self):
+    def fillall(self):
         self.filepaths_rgb = {}
         self.filepaths_depth = {}
-        elem_ix = 0
+        ix = 0
+        idx_elem = 0
         for root, dirs, files in os.walk(self.root_folder, topdown=True):
-            for filename in sorted(files):
-                curr_file_ext = filename.split('.')[1]
-                if curr_file_ext == self.image_ext:
-                    scene = filename.split('_')[0]
-                    image_type = filename.split('_')[1]
-                    frame_num = filename.split('_')[2].split('.')[0]
-                    if image_type == 'depth':
-                        filestruct = '_'.join([root, scene, frame_num])
-                        self.idx_to_filestruct[elem_ix] = filestruct
-                        self.filestruct_to_idx[filestruct] = elem_ix
-                        elem_ix += 1
-        self.length = elem_ix
-        self.get_rand_idx = np.array(list(range(self.length)))
+            if ix == 0:
+                ix += 1
+                continue
+            folder_name = root.split('/')[-1]
+            hand_gt_filepath = root + '/' + folder_name[:-1] + '_right_hand_conv.txt'
+            obj_gt_filepath = root + '/' + folder_name[:-1] + '_obj_pose_conv.txt'
+            with open(hand_gt_filepath) as hand_file:
+                with open(obj_gt_filepath) as obj_file:
+                    next(hand_file)
+                    next(hand_file)
+                    next(hand_file)
+                    next(obj_file)
+                    next(obj_file)
+                    next(obj_file)
+
+                    obj_line = obj_file.readline()
+                    while not obj_line == '':
+                        line_split = obj_line.split(',')
+                        obj_frame_num = int(line_split[0])
+
+                        self.rgb_filepath_of_idx[idx_elem] = root + '/' + folder_name[:-1] +\
+                                                             '_rgb_' + str(obj_frame_num) + '.png'
+                        self.depth_filepath_of_idx[idx_elem] = root + '/' + folder_name[:-1] +\
+                                                             '_depth_' + str(obj_frame_num) + '.png'
+
+
+                        obj_id = int(line_split[1])
+                        obj_pose = np.array([float(i) for i in line_split[2:8]])
+                        obj_uv = np.array([float(i) for i in line_split[8:10]])
+                        self.obj_gt_of_idx[idx_elem] = (obj_id, obj_pose, obj_uv)
+
+                        hand_pose = np.zeros((self.num_hand_bones, 3))
+                        hand_uv = np.zeros((self.num_hand_bones, 2))
+                        for i in range(self.num_hand_bones):
+                            hand_line = hand_file.readline()
+                            if hand_line == '':
+                                raise Exception('Reached en of hand file')
+                            line_split = hand_line.split(',')
+                            hand_frame_num = int(line_split[0])
+                            if not hand_frame_num == obj_frame_num:
+                                raise Exception('Hand and object files are inconsistent!\n{}\n{}'.format(hand_gt_filepath, obj_gt_filepath))
+                            bone_idx = int(line_split[1])
+                            hand_pose[bone_idx, :] = [float(j) for j in line_split[2:5]]
+                            hand_uv[bone_idx, 0] = int(line_split[5].strip())
+                            hand_uv[bone_idx, 1] = int(line_split[6].strip())
+                        self.hand_gt_of_idx[idx_elem] = (hand_pose, hand_uv)
+                        obj_line = obj_file.readline()
+                        idx_elem += 1
+        self.length = idx_elem - 1
+        self.get_rand_idx = list(range(self.length))
         np.random.shuffle(self.get_rand_idx)
 
     def load_rgbd(self, idx):
-        filestruct = self.idx_to_filestruct[idx]
-        filestruct_split = filestruct.split('_')
-        root_folder = filestruct_split[0]
-        scene_obj = filestruct_split[1]
-        frame_num = filestruct_split[2]
         # read rgb image
-        rgb_filepath = root_folder + '/' + scene_obj + '_' + self.rgb_prefix + frame_num + '.' + self.image_ext
+        rgb_filepath = self.rgb_filepath_of_idx[idx]
         rgbd_image = misc.imread(rgb_filepath)
         rgbd_image = rgbd_image.swapaxes(0, 1).astype(float)
         # read depth image
-        depth_filepath = root_folder + '/' + scene_obj + '_' + self.depth_prefix + frame_num + '.' + self.image_ext
+        depth_filepath = self.depth_filepath_of_idx[idx]
         depth_image = misc.imread(depth_filepath)
         depth_image = depth_image.swapaxes(0, 1)
         depth = np.zeros((self.img_res[0], self.img_res[1])).astype(float)
@@ -193,88 +229,67 @@ class Synthom_dataset(Dataset):
         rgbd_image[:, :, 3] = depth
         return rgbd_image
 
-    def fill_obj_poses(self):
-        for root, dirs, files in os.walk(self.root_folder, topdown=True):
-            for filename in sorted(files):
-                curr_file_ext = filename.split('.')[1]
-                if curr_file_ext == 'txt' and 'obj_pose_conv' in filename:
-                    scene = filename.split('_')[0]
-                    obj_filepath = root + '/' + filename
-                    with open(obj_filepath) as f:
-                        next(f)
-                        next(f)
-                        next(f)
-                        for line in f:
-                            line_split = line.split(',')
-                            frame_num = int(line_split[0])
-                            filestruct = '_'.join([root, scene, str(frame_num)])
-                            idx = self.filestruct_to_idx[filestruct]
-                            obj_id = int(line_split[1])
-                            obj_pose = np.array([float(i) for i in line_split[2:8]])
-                            obj_uv = np.array([float(i) for i in line_split[8:10]])
-                            self.obj_id_of_idx[idx] = obj_id
-                            self.obj_pose_of_idx[idx] = obj_pose
-                            self.obj_uv_of_idx[idx] = obj_uv
-
-    def fill_hand_poses(self):
-        for root, dirs, files in os.walk(self.root_folder, topdown=True):
-            for filename in sorted(files):
-                curr_file_ext = filename.split('.')[1]
-                if curr_file_ext == 'txt' and 'right_hand_conv' in filename:
-                    scene = filename.split('_')[0]
-                    hand_filepath = root + '/' + filename
-                    with open(hand_filepath) as f:
-                        next(f)
-                        next(f)
-                        next(f)
-                        line = '.'
-                        while line != '':
-                            hand_pose = np.zeros((self.num_hand_bones, 3))
-                            hand_uv = np.zeros((self.num_hand_bones, 2))
-                            for i in range(self.num_hand_bones):
-                                line = f.readline()
-                                if line == '':
-                                    break
-                                line_split = line.split(',')
-                                frame_num = int(line_split[0])
-                                filestruct = '_'.join([root, scene, str(frame_num)])
-                                idx = self.filestruct_to_idx[filestruct]
-                                bone_idx = int(line_split[1])
-                                hand_pose[bone_idx, :] = [float(j) for j in line_split[2:5]]
-                                hand_uv[bone_idx, 0] = int(line_split[5].strip())
-                                hand_uv[bone_idx, 1] = int(line_split[6].strip())
-                            if not line == '':
-                                self.hand_pose_of_idx[idx] = hand_pose
-                                self.hand_uv_of_idx[idx] = hand_uv
-        a = 0
-
-    def __init__(self, root_folder):
+    def __init__(self, root_folder, load=True, type='train', train_split_prop=0.75):
         self.root_folder = root_folder
-        self.fill_idx_to_filestruct()
-        self.fill_obj_poses()
-        self.fill_hand_poses()
+        if type == 'test':
+            print('Loading test set form file')
+            with open(root_folder + 'dataset.pkl', 'rb') as handle:
+                dataset_dict = pickle.load(handle)
+                self.train_split_size = dataset_dict['train_split_size']
+                self.get_rand_idx = dataset_dict['get_rand_idx'][self.train_split_size:]
+                self.length = len(self.get_rand_idx)
+                self.obj_gt_of_idx = dataset_dict['obj_gt_of_idx']
+                self.hand_gt_of_idx = dataset_dict['hand_gt_of_idx']
+                self.rgb_filepath_of_idx = dataset_dict['rgb_filepath_of_idx']
+                self.depth_filepath_of_idx = dataset_dict['depth_filepath_of_idx']
+        elif type == 'train':
+            if load:
+                print('Loading dataset from file')
+                with open(root_folder + 'dataset.pkl', 'rb') as handle:
+                    dataset_dict = pickle.load(handle)
+                    self.train_split_size = dataset_dict['train_split_size']
+                    self.get_rand_idx = dataset_dict['get_rand_idx'][0:self.train_split_size]
+                    self.length = len(self.get_rand_idx)
+                    self.obj_gt_of_idx = dataset_dict['obj_gt_of_idx']
+                    self.hand_gt_of_idx = dataset_dict['hand_gt_of_idx']
+                    self.rgb_filepath_of_idx = dataset_dict['rgb_filepath_of_idx']
+                    self.depth_filepath_of_idx = dataset_dict['depth_filepath_of_idx']
+            else:
+                print('Creating new dataset split')
+                self.fillall()
+                self.train_split_size = int(self.length * train_split_prop)
+                self.get_rand_idx = self.get_rand_idx[0:self.train_split_size]
+                self.length = len(self.get_rand_idx)
+                with open(root_folder + 'dataset.pkl', 'wb') as handle:
+                    dataset_dict = {'get_rand_idx': self.get_rand_idx,
+                                  'train_split_size': self.train_split_size,
+                                  'obj_gt_of_idx': self.obj_gt_of_idx,
+                                  'hand_gt_of_idx': self.hand_gt_of_idx,
+                                  'rgb_filepath_of_idx': self.rgb_filepath_of_idx,
+                                  'depth_filepath_of_idx': self.depth_filepath_of_idx}
+                    pickle.dump(dataset_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     def __getitem__(self, idx):
-        #idx = self.get_rand_idx[idx]
+        idx = self.get_rand_idx[idx]
 
-        obj_id = self.obj_id_of_idx[idx]
+        obj_gt = self.obj_gt_of_idx[idx]
+        obj_id, obj_pose, obj_uv = obj_gt
         obj_id_prob = np.zeros((self.num_objs,))
         obj_id_prob[obj_id] = 1.0
         obj_id_prob = torch.from_numpy(obj_id_prob).float()
-        obj_orient = self.obj_pose_of_idx[idx][3:].reshape((3,))
+        obj_orient = obj_pose[3:].reshape((3,))
         obj_orient = torch.from_numpy(obj_orient).float()
-        obj_uv = self.obj_uv_of_idx[idx].reshape((2,))
         obj_uv = torch.from_numpy(obj_uv).float()
-        obj_position = self.obj_pose_of_idx[idx][0:3].reshape((3,))
+        obj_position = obj_pose[0:3].reshape((3,))
         obj_position = torch.from_numpy(obj_position).float()
         obj_pose = torch.cat((obj_position, obj_uv, obj_orient), 0)
 
-        hand_pose = self.hand_pose_of_idx[idx]
+        hand_gt = self.hand_gt_of_idx[idx]
+        hand_pose, hand_uv = hand_gt
         hand_pose = torch.from_numpy(hand_pose).float()
         target_hand_pose = hand_pose.reshape((hand_pose.shape[0] * 3,))
 
         rgbd = self.load_rgbd(idx)
-        hand_uv = self.hand_uv_of_idx[idx]
         # plot_image(rgbd, title=str(idx))
         # plt.show()
         # rgbd = change_res_image(rgbd, new_res=(128, 128))

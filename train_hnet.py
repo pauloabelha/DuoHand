@@ -5,7 +5,7 @@ from HNet import HNet
 import torch.optim as optim
 
 root_folder = '/home/paulo/HOMDataset/'
-load_filepath = ''#''/home/paulo/DuoHand/trained_hnet.pth.tar'
+load_filepath = '/home/paulo/DuoHand/trained_hnet.pth.tar'
 use_cuda = False
 batch_size = 4
 
@@ -94,7 +94,7 @@ def load_checkpoint(filename, params_dict, use_cuda=False):
     print('Starting at batch: {}'.format(start_batch_idx))
     return model, optimizer, start_batch_idx
 
-synthom_dataset = synthom_handler.Synthom_dataset(root_folder)
+synthom_dataset = synthom_handler.Synthom_dataset(root_folder, type='train')
 synthom_loader = torch.utils.data.DataLoader(
                                             synthom_dataset,
                                             batch_size=batch_size,
@@ -153,7 +153,7 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
             'batch_idx': batch_idx,
             'loss': loss
         }
-        torch.save(checkpoint_dict, 'trained_honet.pth.tar')
+        torch.save(checkpoint_dict, 'trained_hnet.pth.tar')
         print('Model saved')
         print('-----------------------------------------------------')
     idx_a += 1

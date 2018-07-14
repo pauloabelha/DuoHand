@@ -5,7 +5,7 @@ from HONet import HONet
 import torch.optim as optim
 
 root_folder = '/home/paulo/HOMDataset/'
-load_filepath = ''#''/home/paulo/DuoHand/trained_honet.pth.tar'
+load_filepath = '/home/paulo/DuoHand/trained_honet.pth.tar'
 use_cuda = False
 batch_size = 4
 
@@ -95,7 +95,7 @@ def load_checkpoint(filename, params_dict, use_cuda=False):
     return model, optimizer, start_batch_idx
 
 print('Loading dataset...')
-synthom_dataset = synthom_handler.Synthom_dataset(root_folder, type='train')
+synthom_dataset = synthom_handler.Synthom_dataset(root_folder, type='test')
 synthom_loader = torch.utils.data.DataLoader(
                                             synthom_dataset,
                                             batch_size=batch_size,
@@ -129,11 +129,11 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
     loss, loss_heatmaps, loss_joints, loss_main_joints = calculate_loss_JORNet(
         loss_func, output, target_heatmaps, target_joints, range(16),
         weights_heatmaps_loss, weights_joints_loss, 1)
-    loss.backward()
+    #loss.backward()
     accum_loss += loss_main_joints
     accum_overall_loss += loss.item()
-    optimizer.step()
-    optimizer.zero_grad()
+    #optimizer.step()
+    #optimizer.zero_grad()
     if batch_idx > 0 and batch_idx % 10 == 0:
         idx_a = 0
         avg_loss_joints = accum_loss / 10

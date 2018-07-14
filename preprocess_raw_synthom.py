@@ -81,6 +81,8 @@ for root, dirs, files in os.walk(root_folder, topdown=True):
                     v_coord = str(int(float(uv_coords[1].split('=')[1])))
 
                     if float(z_loc) < Z_handpose_threshold or int(u_coord) > 640 or int(v_coord) > 480:
+                        if subfolder_names[-1] == 'woodblock1':
+                            print('Frame problem: {}'.format(frame_num))
                         num_files_removed += 1
                         # in this case, this pose and its image should not be considered
                         # that is, we should delete the corresponding RGB and Depth images
@@ -110,7 +112,8 @@ for root, dirs, files in os.walk(root_folder, topdown=True):
                         else:
                             frames_to_disconsider[root][frame_num] = 1
                             num_files_gt_but_no_file += 1
-                            print('Ground truth exists, but RGB-D files are not in folder: {}'.format(rgb_filepath))
+                            if subfolder_names[-1] == 'woodblock1':
+                                print('Ground truth exists, but RGB-D files are not in folder: {}'.format(rgb_filepath))
                 subfolder_to_objname[subfolder_names[-1]] = obj_name
                 subfolder_to_convlines[subfolder_names[-1]] = converted_lines
                 break
