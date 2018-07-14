@@ -1,11 +1,11 @@
 import torch
 import synthom_handler
 from torch.autograd import Variable
-from HONet import HONet
+from HNet import HNet
 import torch.optim as optim
 
-root_folder = '/home/paulo/MockDataset1/'
-load_filepath = ''#''/home/paulo/DuoHand/trained_honet.pth.tar'
+root_folder = '/home/paulo/HOMDataset/'
+load_filepath = ''#''/home/paulo/DuoHand/trained_hnet.pth.tar'
 use_cuda = False
 batch_size = 4
 
@@ -82,7 +82,7 @@ def load_checkpoint(filename, params_dict, use_cuda=False):
     params_dict['use_cuda'] = use_cuda
     if not use_cuda:
         params_dict['use_cuda'] = False
-    model = HONet(params_dict)
+    model = HNet(params_dict)
     model.load_state_dict(model_state_dict)
     if use_cuda:
         model = model.cuda()
@@ -94,7 +94,6 @@ def load_checkpoint(filename, params_dict, use_cuda=False):
     print('Starting at batch: {}'.format(start_batch_idx))
     return model, optimizer, start_batch_idx
 
-print('Loading dataset...')
 synthom_dataset = synthom_handler.Synthom_dataset(root_folder)
 synthom_loader = torch.utils.data.DataLoader(
                                             synthom_dataset,
@@ -106,7 +105,7 @@ print('Number of batches: {}'.format(len(synthom_loader)))
 
 honet_params = {'num_joints': 16, 'use_cuda': use_cuda}
 if load_filepath == '':
-    honet = HONet(honet_params)
+    honet = HNet(honet_params)
     optimizer = get_adadelta_halnet(honet)
     start_batch_idx = 0
 else:
@@ -179,7 +178,6 @@ checkpoint_dict = {
 torch.save(checkpoint_dict, 'trained_honet.pth.tar')
 print('Model saved')
 print('-----------------------------------------------------')
-
 
 
 

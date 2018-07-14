@@ -211,7 +211,7 @@ class Synthom_dataset(Dataset):
                             idx = self.filestruct_to_idx[filestruct]
                             obj_id = int(line_split[1])
                             obj_pose = np.array([float(i) for i in line_split[2:8]])
-                            obj_uv = np.array([float(i) for i in line_split[9:10]])
+                            obj_uv = np.array([float(i) for i in line_split[8:10]])
                             self.obj_id_of_idx[idx] = obj_id
                             self.obj_pose_of_idx[idx] = obj_pose
                             self.obj_uv_of_idx[idx] = obj_uv
@@ -246,6 +246,7 @@ class Synthom_dataset(Dataset):
                             if not line == '':
                                 self.hand_pose_of_idx[idx] = hand_pose
                                 self.hand_uv_of_idx[idx] = hand_uv
+        a = 0
 
     def __init__(self, root_folder):
         self.root_folder = root_folder
@@ -254,26 +255,34 @@ class Synthom_dataset(Dataset):
         self.fill_hand_poses()
 
     def __getitem__(self, idx):
-        idx = self.get_rand_idx[idx]
+        #idx = self.get_rand_idx[idx]
+
+        obj_id = self.obj_id_of_idx[idx]
+        obj_id_prob = np.zeros((self.num_objs,))
+        obj_id_prob[obj_id] = 1.0
+        obj_id_prob = torch.from_numpy(obj_id_prob).float()
+        obj_orient = self.obj_pose_of_idx[idx][3:].reshape((3,))
+        obj_orient = torch.from_numpy(obj_orient).float()
+        obj_uv = self.obj_uv_of_idx[idx].reshape((2,))
+        obj_uv = torch.from_numpy(obj_uv).float()
+        obj_position = self.obj_pose_of_idx[idx][0:3].reshape((3,))
+        obj_position = torch.from_numpy(obj_position).float()
+        obj_pose = torch.cat((obj_position, obj_uv, obj_orient), 0)
+
+        hand_pose = self.hand_pose_of_idx[idx]
+        hand_pose = torch.from_numpy(hand_pose).float()
+        target_hand_pose = hand_pose.reshape((hand_pose.shape[0] * 3,))
+
         rgbd = self.load_rgbd(idx)
         hand_uv = self.hand_uv_of_idx[idx]
-        #plot_image(rgbd, title=str(idx))
-        #plt.show()
-        #rgbd = change_res_image(rgbd, new_res=(128, 128))
+        # plot_image(rgbd, title=str(idx))
+        # plt.show()
+        # rgbd = change_res_image(rgbd, new_res=(128, 128))
         rgbd = rgbd.swapaxes(1, 2).swapaxes(0, 1)
         rgbd, crop_coords, target_heatmaps, _ = crop_image_get_labels(rgbd, hand_uv)
         rgbd = torch.from_numpy(rgbd).float()
         target_heatmaps = torch.from_numpy(target_heatmaps).float()
 
-        obj_id = self.obj_id_of_idx[idx]
-        obj_id_prob = np.zeros((self.num_objs, 1))
-        obj_id_prob[obj_id] = 1.0
-        obj_id_prob = torch.from_numpy(obj_id_prob).float()
-        obj_pose = self.obj_pose_of_idx[idx]
-        obj_pose = torch.from_numpy(obj_pose).float()
-        hand_pose = self.hand_pose_of_idx[idx]
-        hand_pose = torch.from_numpy(hand_pose).float()
-        target_hand_pose = hand_pose.reshape((hand_pose.shape[0] * 3,))
         return (rgbd, obj_id_prob, obj_pose), (target_hand_pose, target_heatmaps)
 
     def __len__(self):
