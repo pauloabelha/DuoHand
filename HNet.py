@@ -29,22 +29,22 @@ class HNet(VargoNet_class):
         self.innerproduct1_joint1 = cudafy(
             nn.Linear(in_features=524288, out_features=200), self.use_cuda)
         self.innerproduct2_joint1 = cudafy(
-            nn.Linear(in_features=200, out_features=self.num_joints * 3), self.use_cuda)
+            nn.Linear(in_features=200, out_features=(self.num_joints - 1) * 3), self.use_cuda)
 
         self.innerproduct1_joint2 = cudafy(
             nn.Linear(in_features=262144, out_features=200), self.use_cuda)
         self.innerproduct2_joint2 = cudafy(
-            nn.Linear(in_features=200, out_features=self.num_joints * 3), self.use_cuda)
+            nn.Linear(in_features=200, out_features=(self.num_joints - 1) * 3), self.use_cuda)
 
         self.innerproduct1_joint3 = cudafy(
             nn.Linear(in_features=131072, out_features=200), self.use_cuda)
         self.innerproduct2_joint3 = cudafy(
-            nn.Linear(in_features=200, out_features=self.num_joints * 3), self.use_cuda)
+            nn.Linear(in_features=200, out_features=(self.num_joints - 1) * 3), self.use_cuda)
 
         self.innerproduct1_joint_main = cudafy(
             nn.Linear(in_features=65536, out_features=200), self.use_cuda)
         self.innerproduct2_join_main = cudafy(
-            nn.Linear(in_features=200, out_features=self.num_joints * 3), self.use_cuda)
+            nn.Linear(in_features=200, out_features=(self.num_joints - 1) * 3), self.use_cuda)
 
     def forward(self, x):
         (rgbd, obj_id, obj_pose) = x

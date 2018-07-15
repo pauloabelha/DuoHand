@@ -36,12 +36,12 @@ class HONet(VargoNet_class):
         self.innerproduct1_joint2 = cudafy(
             nn.Linear(in_features=262144, out_features=200), self.use_cuda)
         self.innerproduct2_joint2 = cudafy(
-            nn.Linear(in_features=200, out_features=self.num_joints * 3), self.use_cuda)
+            nn.Linear(in_features=200, out_features=(self.num_joints - 1) * 3), self.use_cuda)
 
         self.innerproduct1_joint3 = cudafy(
             nn.Linear(in_features=131072, out_features=200), self.use_cuda)
         self.innerproduct2_joint3 = cudafy(
-            nn.Linear(in_features=200, out_features=self.num_joints * 3), self.use_cuda)
+            nn.Linear(in_features=200, out_features=(self.num_joints - 1) * 3), self.use_cuda)
 
         self.innerproduct1_joint_main = cudafy(
             nn.Linear(in_features=65536, out_features=200), self.use_cuda)
@@ -60,7 +60,7 @@ class HONet(VargoNet_class):
         self.hand_obj0 = cudafy(
             nn.Linear(in_features=200+self.size_obj_input, out_features=100), self.use_cuda)
         self.hand_obj1 = cudafy(
-            nn.Linear(in_features=100, out_features=48), self.use_cuda)
+            nn.Linear(in_features=100, out_features=(self.num_joints - 1) * 3), self.use_cuda)
 
 
 

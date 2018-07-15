@@ -2,7 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0d60f2c3-e7d7-43b4-908c-8c59922a49ce" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/HNet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HONet.py" beforeDir="false" afterPath="$PROJECT_DIR$/HONet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/synthom_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/synthom_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_net.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_net.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/train_net.py" beforeDir="false" afterPath="$PROJECT_DIR$/train_net.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,8 +22,8 @@
       <file leaf-file-name="train_net.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/train_net.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1020">
-              <caret line="68" column="53" lean-forward="true" selection-start-line="68" selection-start-column="53" selection-end-line="68" selection-end-column="53" />
+            <state relative-caret-position="195">
+              <caret line="64" column="21" selection-start-line="64" selection-start-column="21" selection-end-line="64" selection-end-column="21" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
@@ -25,23 +31,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="synthom_handler.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/synthom_handler.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="678">
-              <caret line="233" column="54" lean-forward="true" selection-start-line="233" selection-start-column="54" selection-end-line="233" selection-end-column="54" />
-              <folding>
-                <element signature="e#56#68#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_net.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="test_net.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test_net.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
-              <caret line="42" column="40" selection-start-line="42" selection-start-column="40" selection-end-line="42" selection-end-column="40" />
+            <state relative-caret-position="313">
+              <caret line="55" column="53" lean-forward="true" selection-start-line="55" selection-start-column="53" selection-end-line="55" selection-end-column="53" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
@@ -129,17 +123,17 @@
         <option value="$USER_HOME$/muellericcv2017/losses.py" />
         <option value="$PROJECT_DIR$/validate_vargonet.py" />
         <option value="$PROJECT_DIR$/random_backgrounds.py" />
-        <option value="$PROJECT_DIR$/HONet.py" />
         <option value="$PROJECT_DIR$/preprocess_raw_synthom.py" />
         <option value="$PROJECT_DIR$/test_hnet.py" />
         <option value="$PROJECT_DIR$/train_honet.py" />
         <option value="$PROJECT_DIR$/test_honet.py" />
         <option value="$PROJECT_DIR$/train_hnet.py" />
-        <option value="$PROJECT_DIR$/HNet.py" />
         <option value="$PROJECT_DIR$/VargoNet.py" />
-        <option value="$PROJECT_DIR$/util.py" />
-        <option value="$PROJECT_DIR$/test_net.py" />
         <option value="$PROJECT_DIR$/synthom_handler.py" />
+        <option value="$PROJECT_DIR$/HNet.py" />
+        <option value="$PROJECT_DIR$/util.py" />
+        <option value="$PROJECT_DIR$/HONet.py" />
+        <option value="$PROJECT_DIR$/test_net.py" />
         <option value="$PROJECT_DIR$/train_net.py" />
       </list>
     </option>
@@ -193,7 +187,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.train_net">
+  <component name="RunManager" selected="Python.test_net">
     <configuration name="preprocess_raw_synthom" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="DuoHand" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -335,16 +329,16 @@
     <frame x="64" y="-11" width="1617" height="1062" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2495356" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16656347" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32875264" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="7" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32875264" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.41120508" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.41120508" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -373,7 +367,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="398" />
+      <option name="time" value="401" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
@@ -722,23 +716,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test_hnet.py" />
     <entry file="file://$PROJECT_DIR$/train_honet.py" />
-    <entry file="file://$PROJECT_DIR$/HONet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1035">
-          <caret line="69" selection-start-line="69" selection-end-line="69" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/HNet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="28" lean-forward="true" selection-start-line="8" selection-start-column="28" selection-end-line="8" selection-end-column="28" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/VargoNet.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="197">
@@ -746,42 +723,56 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/synthom_handler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="213">
+          <caret line="329" lean-forward="true" selection-start-line="329" selection-end-line="329" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/util.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-20">
-          <caret line="101" column="80" selection-start-line="101" selection-start-column="75" selection-end-line="101" selection-end-column="80" />
+        <state relative-caret-position="243">
+          <caret line="99" column="18" lean-forward="true" selection-start-line="99" selection-start-column="18" selection-end-line="99" selection-end-column="18" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_net.py">
+    <entry file="file://$PROJECT_DIR$/HONet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="42" column="40" selection-start-line="42" selection-start-column="40" selection-end-line="42" selection-end-column="40" />
+        <state relative-caret-position="110">
+          <caret line="40" column="43" lean-forward="true" selection-start-line="40" selection-start-column="43" selection-end-line="40" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/HNet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="215">
+          <caret line="33" column="43" lean-forward="true" selection-start-line="33" selection-start-column="43" selection-end-line="33" selection-end-column="43" />
           <folding>
-            <element signature="e#0#22#0" expanded="true" />
+            <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/train_net.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1020">
-          <caret line="68" column="53" lean-forward="true" selection-start-line="68" selection-start-column="53" selection-end-line="68" selection-end-column="53" />
+        <state relative-caret-position="195">
+          <caret line="64" column="21" selection-start-line="64" selection-start-column="21" selection-end-line="64" selection-end-column="21" />
           <folding>
             <element signature="e#0#22#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/synthom_handler.py">
+    <entry file="file://$PROJECT_DIR$/test_net.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="678">
-          <caret line="233" column="54" lean-forward="true" selection-start-line="233" selection-start-column="54" selection-end-line="233" selection-end-column="54" />
+        <state relative-caret-position="313">
+          <caret line="55" column="53" lean-forward="true" selection-start-line="55" selection-start-column="53" selection-end-line="55" selection-end-column="53" />
           <folding>
-            <element signature="e#56#68#0" expanded="true" />
+            <element signature="e#0#22#0" expanded="true" />
           </folding>
         </state>
       </provider>

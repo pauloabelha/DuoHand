@@ -88,7 +88,8 @@ def load_checkpoint(filename, NetworkClass, params_dict, use_cuda=False):
     start_batch_idx = torch_file['batch_idx'] + 1
     return model, optimizer, start_batch_idx
 
-def calc_avg_joint_loss(output_main, target_joints, num_joints=16):
+# num_joints should be one less (no hand root)
+def calc_avg_joint_loss(output_main, target_joints, num_joints=15):
     loss = 0.
     range_ = target_joints.shape[0]
     for i in range(range_):

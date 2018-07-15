@@ -229,8 +229,12 @@ class Synthom_dataset(Dataset):
                             hand_pose[bone_idx, :] = [float(j) for j in line_split[2:5]]
                             hand_uv[bone_idx, 0] = int(line_split[5].strip())
                             hand_uv[bone_idx, 1] = int(line_split[6].strip())
+                        hand_root = np.copy(hand_pose[0, :])
+                        hand_pose -= hand_root
+                        hand_pose = hand_pose[1:, :]
+                        hand_root *= 10
                         hand_pose *= 10
-                        self.hand_gt_of_idx[idx_elem] = (hand_pose, hand_uv)
+                        self.hand_gt_of_idx[idx_elem] = (hand_root, hand_pose, hand_uv)
                         obj_line = obj_file.readline()
                         idx_elem += 1
         self.min_obj_pose = np.array(min_obj_pose)
@@ -320,7 +324,7 @@ class Synthom_dataset(Dataset):
         obj_pose = torch.cat((obj_position, obj_uv, obj_orient), 0)
 
         hand_gt = self.hand_gt_of_idx[idx]
-        hand_pose, hand_uv = hand_gt
+        hand_root, hand_pose, hand_uv = hand_gt
         hand_pose = torch.from_numpy(hand_pose).float()
         target_hand_pose = hand_pose.reshape((hand_pose.shape[0] * 3,))
 

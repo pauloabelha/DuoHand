@@ -7,6 +7,7 @@ from util import *
 NetworkClass = HNet
 dataset_folder = '/home/paulo/Output/'
 net_filename = 'trained_' + NetworkClass.__name__ + '.pth.tar'
+load_dataset = False
 load_net = False
 use_cuda = False
 batch_size = 4
@@ -14,7 +15,7 @@ num_joints = 16
 log_interv = 10
 save_file_interv = 50
 
-synthom_dataset = synthom_handler.Synthom_dataset(dataset_folder, type='train')
+synthom_dataset = synthom_handler.Synthom_dataset(dataset_folder, type='train', load=load_dataset)
 synthom_loader = torch.utils.data.DataLoader(
                                             synthom_dataset,
                                             batch_size=batch_size,
@@ -58,6 +59,8 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
         obj_id = obj_id.cuda()
         obj_pose = obj_pose.cuda()
         target_joints = target_joints.cuda()
+        target_heatmaps = target_heatmaps.cuda()
+        data = (rgbd, obj_id, obj_pose)
 
     output = net(data)
 
