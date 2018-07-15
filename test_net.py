@@ -1,11 +1,12 @@
 import synthom_handler
 from torch.autograd import Variable
 from HNet import HNet
+from HONet import HONet
 from util import *
 
 NetworkClass = HNet
 dataset_folder = '/home/paulo/Output/'
-net_filepath = '/home/paulo/DuoHand/trained_hnet.pth.tar'
+net_filepath = '/home/paulo/DuoHand/' + 'trained_' + NetworkClass.__name__ + '.pth.tar'
 use_cuda = False
 batch_size = 4
 num_joints = 16
@@ -35,12 +36,19 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
                                      Variable(obj_pose), Variable(target_joints), \
                                      Variable(target_heatmaps)
     output = model(data)
+    output_main_numpy = output[7].data.numpy()
+
+    plot_3D_joints(target_joints.data.numpy()[0])
+    show()
+    plot_3D_joints(output_main_numpy[0])
+    show()
+
     weights_heatmaps_loss, weights_joints_loss = get_loss_weights(batch_idx)
     loss_func = cross_entropy_loss_p_logq
     loss, loss_heatmaps, loss_joints, loss_main_joints = calculate_loss_JORNet(
         loss_func, output, target_heatmaps, target_joints, range(num_joints),
         weights_heatmaps_loss, weights_joints_loss, 1)
-    report_loss = calc_avg_joint_loss(output[7].data.numpy(), target_joints.data.numpy())
+    report_loss = calc_avg_joint_loss(output_main_numpy, target_joints.data.numpy())
     accum_loss += report_loss
     accum_tot_loss += report_loss
     accum_overall_loss += loss.item()

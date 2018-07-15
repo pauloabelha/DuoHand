@@ -229,6 +229,7 @@ class Synthom_dataset(Dataset):
                             hand_pose[bone_idx, :] = [float(j) for j in line_split[2:5]]
                             hand_uv[bone_idx, 0] = int(line_split[5].strip())
                             hand_uv[bone_idx, 1] = int(line_split[6].strip())
+                        hand_pose *= 10
                         self.hand_gt_of_idx[idx_elem] = (hand_pose, hand_uv)
                         obj_line = obj_file.readline()
                         idx_elem += 1

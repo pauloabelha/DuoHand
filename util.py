@@ -1,6 +1,8 @@
 import torch
 import numpy as np
 import torch.optim as optim
+from matplotlib import pyplot as plt
+from mpl_toolkits.mplot3d import axes3d, Axes3D #<-- Note the capitalization!
 
 ADADELTA_LEARNING_RATE = 0.05
 ADADELTA_MOMENTUM = 0.9
@@ -96,3 +98,49 @@ def calc_avg_joint_loss(output_main, target_joints, num_joints=16):
         loss += float(np.sum(np.diag(dist)) / num_joints)
     loss /= range_
     return loss
+
+def plot_3D_joints(joints_vec, num_joints=16, title='', fig=None, ax=None, color=None):
+    if fig is None:
+        fig = plt.figure()
+        ax = Axes3D(fig)
+    if joints_vec.shape[0] == (num_joints - 1) * 3:
+        joints_vec = joints_vec.reshape((num_joints - 1, 3))
+        joints_vec = np.vstack([np.zeros((1, 3)), joints_vec])
+    else:
+        joints_vec = joints_vec.reshape((num_joints, 3))
+    for i in range(5):
+        idx = (i * 3) + 1
+        if color is None:
+            curr_color = 'C0'
+        else:
+            curr_color = color
+        ax.plot([joints_vec[0, 1], joints_vec[idx, 1]],
+                [joints_vec[0, 0], joints_vec[idx, 0]],
+                [joints_vec[0, 2], joints_vec[idx, 2]],
+                label='',
+                color=curr_color)
+    for j in range(5):
+        idx = (j * 3) + 1
+        for i in range(2):
+            if color is None:
+                curr_color = 'C' + str(j+1)
+            else:
+                curr_color = color
+            ax.plot([joints_vec[idx, 1], joints_vec[idx + 1, 1]],
+                    [joints_vec[idx, 0], joints_vec[idx + 1, 0]],
+                    [joints_vec[idx, 2], joints_vec[idx + 1, 2]],
+                    label='',
+                    color=curr_color)
+            idx += 1
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+    #ax.set_xlim(0, 640)
+    #ax.set_ylim(0, 480)
+    #ax.set_zlim(0, 500)
+    ax.view_init(azim=0, elev=180)
+    ax.set_title(title)
+    return fig, ax
+
+def show():
+    plt.show()

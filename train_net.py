@@ -4,7 +4,7 @@ from HNet import HNet
 from HONet import HONet
 from util import *
 
-NetworkClass = HONet
+NetworkClass = HNet
 dataset_folder = '/home/paulo/Output/'
 net_filename = 'trained_' + NetworkClass.__name__ + '.pth.tar'
 load_net = False
@@ -42,6 +42,7 @@ avg_report_loss = 0.
 net_loss = 0.
 idx_a = 0
 net.train()
+batch_idx = 0
 for batch_idx, (data, target) in enumerate(synthom_loader):
     if batch_idx < start_batch_idx:
         continue
@@ -81,7 +82,8 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
             'model_state_dict': net.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
             'avg_net_loss': avg_net_loss,
-            'avg_report_loss': avg_report_loss
+            'avg_report_loss': avg_report_loss,
+            'batch_idx': batch_idx
         }
         torch.save(checkpoint_dict, net_filename)
         print('Model saved')
@@ -92,7 +94,8 @@ checkpoint_dict = {
             'model_state_dict': net.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
             'avg_net_loss': avg_net_loss,
-            'avg_report_loss': avg_report_loss
+            'avg_report_loss': avg_report_loss,
+            'batch_idx': batch_idx
         }
 torch.save(checkpoint_dict, net_filename)
 print('Model saved')
