@@ -286,10 +286,11 @@ class Synthom_dataset(Dataset):
                 print('Creating new dataset split')
                 self.fillall()
                 self.train_split_size = int(self.length * train_split_prop)
-                self.get_rand_idx = self.get_rand_idx[0:self.train_split_size]
+                get_rand_idx_tot = self.get_rand_idx
+                self.get_rand_idx = get_rand_idx_tot[0:self.train_split_size]
                 self.length = len(self.get_rand_idx)
                 with open(root_folder + 'dataset.pkl', 'wb') as handle:
-                    dataset_dict = {'get_rand_idx': self.get_rand_idx,
+                    dataset_dict = {'get_rand_idx': get_rand_idx_tot,
                                   'train_split_size': self.train_split_size,
                                   'obj_gt_of_idx': self.obj_gt_of_idx,
                                   'hand_gt_of_idx': self.hand_gt_of_idx,
