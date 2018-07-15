@@ -3,19 +3,23 @@ from torch.autograd import Variable
 from HNet import HNet
 from HONet import HONet
 from util import *
+import argparse
 
 NetworkClass = HNet
-dataset_folder = '/home/paulo/Output/'
-net_filename = 'trained_' + NetworkClass.__name__ + '.pth.tar'
-load_dataset = False
 load_net = False
-use_cuda = False
 batch_size = 4
 num_joints = 16
 log_interv = 10
 save_file_interv = 50
 
-synthom_dataset = synthom_handler.Synthom_dataset(dataset_folder, type='train', load=load_dataset)
+parser = argparse.ArgumentParser(description='')
+parser.add_argument('-d', dest='dataset_folder', default='/home/paulo/Output/', required=True, help='Root folder for dataset')
+parser.add_argument('-n', dest='net_filename', default='trained_' + NetworkClass.__name__ + '.pth.tar', help='Network filename')
+parser.add_argument('--load_dataset', dest='load_dataset', action='store_true', default=True, help='Whether to use cuda for training')
+parser.add_argument('--use_cuda', dest='use_cuda', action='store_true', default=False, help='Whether to use cuda for training')
+args = parser.parse_args()
+
+synthom_dataset = synthom_handler.Synthom_dataset(args.dataset_folder, type='train', load=args.load_dataset)
 synthom_loader = torch.utils.data.DataLoader(
                                             synthom_dataset,
                                             batch_size=batch_size,
@@ -25,17 +29,17 @@ print('Length of dataset: {}'.format(len(synthom_loader) * batch_size))
 length_dataset = len(synthom_loader)
 print('Number of batches: {}'.format(length_dataset))
 
-net_params = {'num_joints': num_joints, 'use_cuda': use_cuda}
+net_params = {'num_joints': num_joints, 'use_cuda': args.use_cuda}
 if load_net:
-    net, optimizer, start_batch_idx = load_checkpoint(net_filename, NetworkClass,
+    net, optimizer, start_batch_idx = load_checkpoint(args.net_filename, NetworkClass,
                                                       params_dict=net_params,
-                                                      use_cuda=use_cuda)
+                                                      use_cuda=args.use_cuda)
 else:
     net = NetworkClass(net_params)
     optimizer = get_adadelta(net)
     start_batch_idx = 0
 
-if use_cuda:
+if args.use_cuda:
     torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
 accum_net_loss = 0.
@@ -46,6 +50,7 @@ net_loss = 0.
 idx_a = 0
 net.train()
 batch_idx = 0
+accum_report_tot_loss = 0.
 for batch_idx, (data, target) in enumerate(synthom_loader):
     if batch_idx < start_batch_idx:
         continue
@@ -54,7 +59,7 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
     rgbd, obj_id, obj_pose, target_joints, target_heatmaps = Variable(rgbd), Variable(obj_id),\
                                      Variable(obj_pose), Variable(target_joints), \
                                      Variable(target_heatmaps)
-    if use_cuda:
+    if args.use_cuda:
         rgbd = rgbd.cuda()
         obj_id = obj_id.cuda()
         obj_pose = obj_pose.cuda()
@@ -64,7 +69,7 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
 
     output = net(data)
 
-    if use_cuda:
+    if args.use_cuda:
         output_main_np = output[7].cpu().data.numpy()
         target_joints_np = target_joints.cpu().data.numpy()
     else:
@@ -82,7 +87,9 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
     optimizer.zero_grad()
 
     accum_net_loss += loss.item()
-    accum_report_loss += calc_avg_joint_loss(output_main_np, target_joints_np)
+    report_loss = calc_avg_joint_loss(output_main_np, target_joints_np)
+    accum_report_loss += report_loss
+    accum_report_tot_loss += report_loss
 
     if batch_idx > 0 and batch_idx % log_interv == 0:
         idx_a = 0
@@ -94,6 +101,7 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
         print('Batch idx: {}/{}'.format(batch_idx, length_dataset))
         print('Curr avg overall network loss: {}'.format(avg_net_loss))
         print('Curr avg per joint loss (mm): {}'.format(avg_report_loss))
+        print('Avg overall network loss: {}'.format(int(accum_report_tot_loss / batch_idx)))
         print('-----------------------------------------------------')
     if batch_idx > 0 and batch_idx % save_file_interv == 0:
         print('Saving model to disk...')
@@ -102,6 +110,7 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
             'optimizer_state_dict': optimizer.state_dict(),
             'avg_net_loss': avg_net_loss,
             'avg_report_loss': avg_report_loss,
+            'accum_report_tot_loss': accum_report_tot_loss,
             'batch_idx': batch_idx
         }
         torch.save(checkpoint_dict, net_filename)
@@ -114,6 +123,7 @@ checkpoint_dict = {
             'optimizer_state_dict': optimizer.state_dict(),
             'avg_net_loss': avg_net_loss,
             'avg_report_loss': avg_report_loss,
+            'accum_report_tot_loss': accum_report_tot_loss,
             'batch_idx': batch_idx
         }
 torch.save(checkpoint_dict, net_filename)

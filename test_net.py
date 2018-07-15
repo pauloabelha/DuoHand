@@ -4,7 +4,7 @@ from HNet import HNet
 from HONet import HONet
 from util import *
 
-NetworkClass = HNet
+NetworkClass = HONet
 dataset_folder = '/home/paulo/Output/'
 net_filepath = '/home/paulo/DuoHand/' + 'trained_' + NetworkClass.__name__ + '.pth.tar'
 use_cuda = False
@@ -25,6 +25,9 @@ print('Number of batches: {}'.format(length_dataset))
 model_params = {'num_joints': num_joints, 'use_cuda': use_cuda}
 model, _, start_batch_idx = load_checkpoint(net_filepath, NetworkClass, params_dict=model_params, use_cuda=use_cuda)
 
+if use_cuda:
+    torch.set_default_tensor_type('torch.cuda.FloatTensor')
+
 accum_net_loss = 0.
 accum_report_loss = 0.
 avg_net_loss = 0.
@@ -32,6 +35,7 @@ avg_report_loss = 0.
 net_loss = 0.
 idx_a = 0
 batch_idx = 0
+accum_report_tot_loss = 0.
 for batch_idx, (data, target) in enumerate(synthom_loader):
     (rgbd, obj_id, obj_pose) = data
     target_joints, target_heatmaps = target
@@ -62,7 +66,9 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
         weights_heatmaps_loss, weights_joints_loss, 1)
 
     accum_net_loss += loss.item()
-    accum_report_loss += calc_avg_joint_loss(output_main_np, target_joints_np)
+    report_loss = calc_avg_joint_loss(output_main_np, target_joints_np)
+    accum_report_loss += report_loss
+    accum_report_tot_loss += report_loss
 
     if batch_idx > 0 and batch_idx % log_interv == 0:
         idx_a = 0
@@ -74,4 +80,5 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
         print('Batch idx: {}/{}'.format(batch_idx, length_dataset))
         print('Curr avg overall network loss: {}'.format(avg_net_loss))
         print('Curr avg per joint loss (mm): {}'.format(avg_report_loss))
+        print('Avg overall network loss: {}'.format(int(accum_report_tot_loss / batch_idx)))
         print('-----------------------------------------------------')

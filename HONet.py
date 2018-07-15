@@ -31,7 +31,7 @@ class HONet(VargoNet_class):
         self.innerproduct1_joint1 = cudafy(
             nn.Linear(in_features=524288, out_features=200), self.use_cuda)
         self.innerproduct2_joint1 = cudafy(
-            nn.Linear(in_features=200, out_features=self.num_joints * 3), self.use_cuda)
+            nn.Linear(in_features=200, out_features=(self.num_joints - 1) * 3), self.use_cuda)
 
         self.innerproduct1_joint2 = cudafy(
             nn.Linear(in_features=262144, out_features=200), self.use_cuda)
