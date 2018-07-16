@@ -8,7 +8,7 @@ NetworkClass = HONet
 dataset_folder = '/home/paulo/Output/'
 net_filepath = '/home/paulo/DuoHand/' + 'trained_' + NetworkClass.__name__ + '.pth.tar'
 use_cuda = False
-batch_size = 4
+batch_size = 1
 num_joints = 16
 log_interv = 10
 
@@ -18,6 +18,7 @@ synthom_loader = torch.utils.data.DataLoader(
                                             batch_size=batch_size,
                                             shuffle=False)
 
+print('Network class: {}'.format(NetworkClass.__name__))
 print('Length of dataset: {}'.format(len(synthom_loader) * batch_size))
 length_dataset = len(synthom_loader)
 print('Number of batches: {}'.format(length_dataset))
@@ -36,6 +37,10 @@ net_loss = 0.
 idx_a = 0
 batch_idx = 0
 accum_report_tot_loss = 0.
+loss_list = []
+loss_per_obj = []
+for i in range(4):
+    loss_per_obj.append([])
 for batch_idx, (data, target) in enumerate(synthom_loader):
     (rgbd, obj_id, obj_pose) = data
     target_joints, target_heatmaps = target
@@ -59,6 +64,11 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
         output_main_np = output[7].data.numpy()
         target_joints_np = target_joints.data.numpy()
 
+    #plot_3D_joints(target_joints_np[0])
+    #show()
+    #plot_3D_joints(output_main_np[0])
+    #show()
+
     weights_heatmaps_loss, weights_joints_loss = get_loss_weights(batch_idx)
     loss_func = cross_entropy_loss_p_logq
     loss, loss_heatmaps, loss_joints, loss_main_joints = calculate_loss_JORNet(
@@ -67,8 +77,12 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
 
     accum_net_loss += loss.item()
     report_loss = calc_avg_joint_loss(output_main_np, target_joints_np)
+    loss_list.append(report_loss)
     accum_report_loss += report_loss
     accum_report_tot_loss += report_loss
+
+    aa = int(np.argmax(obj_id.cpu().data.numpy()))
+    loss_per_obj[aa].append(report_loss)
 
     if batch_idx > 0 and batch_idx % log_interv == 0:
         idx_a = 0
@@ -78,7 +92,9 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
         accum_report_loss = 0.
         print('-----------------------------------------------------')
         print('Batch idx: {}/{}'.format(batch_idx, length_dataset))
-        print('Curr avg overall network loss: {}'.format(avg_net_loss))
-        print('Curr avg per joint loss (mm): {}'.format(avg_report_loss))
-        print('Avg overall network loss: {}'.format(int(accum_report_tot_loss / batch_idx)))
+        print('Mean joint loss (mm): {}'.format(int(np.mean(loss_list))))
+        print('Stddev joint loss (mm): {}'.format(int(np.std(loss_list))))
+        for i in range(4):
+            print('\tMean joint loss per obj (mm) {} : {}'.format(i, int(np.mean(loss_per_obj[i]))))
+            print('\tStddev joint loss per obj (mm) {} : {}'.format(i, int(np.std(loss_per_obj[i]))))
         print('-----------------------------------------------------')

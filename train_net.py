@@ -5,7 +5,7 @@ from HONet import HONet
 from util import *
 import argparse
 
-NetworkClass = HNet
+NetworkClass = HONet
 load_net = False
 batch_size = 4
 num_joints = 16
@@ -14,10 +14,20 @@ save_file_interv = 50
 
 parser = argparse.ArgumentParser(description='')
 parser.add_argument('-d', dest='dataset_folder', default='/home/paulo/Output/', required=True, help='Root folder for dataset')
+parser.add_argument('-c', dest='net_class', default='', required=True, help='Network class (hnet or honet)')
 parser.add_argument('-n', dest='net_filename', default='trained_' + NetworkClass.__name__ + '.pth.tar', help='Network filename')
 parser.add_argument('--load_dataset', dest='load_dataset', action='store_true', default=True, help='Whether to use cuda for training')
 parser.add_argument('--use_cuda', dest='use_cuda', action='store_true', default=False, help='Whether to use cuda for training')
+parser.add_argument('--rgbd', dest='use_rgbd', action='store_true', default=True, help='Whether to use RGB-D (or RGB is false)')
 args = parser.parse_args()
+
+if args.net_class == 'hnet':
+    NetworkClass = HNet
+elif args.net_class == 'honet':
+    NetworkClass = HONet
+else:
+    raise 1
+net_filename = 'trained_' + NetworkClass.__name__ + '.pth.tar'
 
 synthom_dataset = synthom_handler.Synthom_dataset(args.dataset_folder, type='train', load=args.load_dataset)
 synthom_loader = torch.utils.data.DataLoader(
@@ -25,6 +35,7 @@ synthom_loader = torch.utils.data.DataLoader(
                                             batch_size=batch_size,
                                             shuffle=False)
 
+print('Network class: {}'.format(NetworkClass.__name__))
 print('Length of dataset: {}'.format(len(synthom_loader) * batch_size))
 length_dataset = len(synthom_loader)
 print('Number of batches: {}'.format(length_dataset))
@@ -55,6 +66,8 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
     if batch_idx < start_batch_idx:
         continue
     (rgbd, obj_id, obj_pose) = data
+    if not args.use_rgbd:
+        rgbd = rgbd[:, 0:3, :, :]
     target_joints, target_heatmaps = target
     rgbd, obj_id, obj_pose, target_joints, target_heatmaps = Variable(rgbd), Variable(obj_id),\
                                      Variable(obj_pose), Variable(target_joints), \
@@ -67,6 +80,7 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
         target_heatmaps = target_heatmaps.cuda()
         data = (rgbd, obj_id, obj_pose)
 
+    data = (rgbd, obj_id, obj_pose)
     output = net(data)
 
     if args.use_cuda:
@@ -113,7 +127,7 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
             'accum_report_tot_loss': accum_report_tot_loss,
             'batch_idx': batch_idx
         }
-        torch.save(checkpoint_dict, net_filename)
+        torch.save(checkpoint_dict, args.net_filename)
         print('Model saved')
         print('-----------------------------------------------------')
 
@@ -126,7 +140,7 @@ checkpoint_dict = {
             'accum_report_tot_loss': accum_report_tot_loss,
             'batch_idx': batch_idx
         }
-torch.save(checkpoint_dict, net_filename)
+torch.save(checkpoint_dict, args.net_filename)
 print('Model saved')
 print('-----------------------------------------------------')
 

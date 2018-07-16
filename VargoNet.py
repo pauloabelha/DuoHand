@@ -145,13 +145,16 @@ class VargoNet(nn.Module):
     WEIGHT_LOSS_INTERMED3 = 0.5
     WEIGHT_LOSS_MAIN = 1
 
+    # if RGB, 3; if RGB-D, 4
+    in_channels = 4
+
     def __init__(self, params_dict):
         super(VargoNet, self).__init__()
         # initialize variables
         self.use_cuda = parse_model_param(params_dict, 'use_cuda', default_value=False)
         # build network
         self.conv1 = cudafy(VargoNetConvBlock(kernel_size=7, stride=1, filters=64,
-                                     in_channels=4, padding=3), self.use_cuda)
+                                     in_channels=self.in_channels, padding=3), self.use_cuda)
         self.mp1 = cudafy(nn.MaxPool2d(kernel_size=3, stride=2, padding=1), self.use_cuda)
         self.res2a = cudafy(VargoNetResBlockConv(stride=1, filters1=64, filters2=256,
                                         padding_right1=1), self.use_cuda)
@@ -196,14 +199,14 @@ class VargoNet(nn.Module):
         out = self.mp1(out)
         out = self.res2a(out)
         out = self.res2b(out)
-        #out = self.res2c(out)
+        out = self.res2c(out)
         res3aout = self.res3a(out)
         out = self.res3b(res3aout)
-        #out = self.res3c(out)
+        out = self.res3c(out)
         res4aout = self.res4a(out)
         out = self.res4b(res4aout)
-        #out = self.res4c(out)
-        #out = self.res4d(out)
+        out = self.res4c(out)
+        out = self.res4d(out)
         conv4eout = self.conv4e(out)
         conv4fout = self.conv4f(conv4eout)
         return res3aout, res4aout, conv4eout, conv4fout
