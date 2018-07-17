@@ -93,12 +93,12 @@ class HONet(VargoNet_class):
         # put object in the net
         obj_in = torch.cat((obj_id, obj_pose), 1)
         obj_out = self.obj0(obj_in)
-        #obj_out = self.obj1(obj_out)
-        #obj_out = self.obj2(obj_out)
+        obj_out = self.obj1(obj_out)
+        obj_out = self.obj2(obj_out)
 
         # merge hand and object
         obj_hand_out = torch.cat((out_intermed_j_main, obj_out), 1)
-        #obj_hand_out = self.merge_hand_obj(obj_hand_out)
+        obj_hand_out = self.merge_hand_obj(obj_hand_out)
         obj_hand_out = self.hand_obj0(obj_hand_out)
         joints_out = self.hand_obj1(obj_hand_out)
 

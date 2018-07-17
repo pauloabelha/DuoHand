@@ -1,0 +1,141 @@
+Number of epochs to train: 3
+Network class: HNet
+Length of dataset: 1712
+Number of batches: 428
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 10/428
+Curr avg overall network loss: 11939031
+Curr avg per joint loss (mm): 92
+Avg overall network loss: 92
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 20/428
+Curr avg overall network loss: 8760863
+Curr avg per joint loss (mm): 61
+Avg overall network loss: 77
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 30/428
+Curr avg overall network loss: 8570282
+Curr avg per joint loss (mm): 63
+Avg overall network loss: 72
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 40/428
+Curr avg overall network loss: 7996180
+Curr avg per joint loss (mm): 60
+Avg overall network loss: 69
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 50/428
+Curr avg overall network loss: 7246273
+Curr avg per joint loss (mm): 53
+Avg overall network loss: 66
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 60/428
+Curr avg overall network loss: 7295505
+Curr avg per joint loss (mm): 52
+Avg overall network loss: 64
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 70/428
+Curr avg overall network loss: 6409715
+Curr avg per joint loss (mm): 48
+Avg overall network loss: 62
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 80/428
+Curr avg overall network loss: 7357326
+Curr avg per joint loss (mm): 54
+Avg overall network loss: 61
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 90/428
+Curr avg overall network loss: 7772941
+Curr avg per joint loss (mm): 57
+Avg overall network loss: 60
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 100/428
+Curr avg overall network loss: 7489243
+Curr avg per joint loss (mm): 53
+Avg overall network loss: 60
+-----------------------------------------------------
+Saving model to disk...
+Model saved
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 110/428
+Curr avg overall network loss: 7317568
+Curr avg per joint loss (mm): 53
+Avg overall network loss: 59
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 120/428
+Curr avg overall network loss: 6292000
+Curr avg per joint loss (mm): 44
+Avg overall network loss: 58
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 130/428
+Curr avg overall network loss: 6103171
+Curr avg per joint loss (mm): 44
+Avg overall network loss: 57
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 140/428
+Curr avg overall network loss: 6014168
+Curr avg per joint loss (mm): 44
+Avg overall network loss: 56
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 150/428
+Curr avg overall network loss: 6169115
+Curr avg per joint loss (mm): 45
+Avg overall network loss: 55
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 160/428
+Curr avg overall network loss: 6603955
+Curr avg per joint loss (mm): 48
+Avg overall network loss: 55
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 170/428
+Curr avg overall network loss: 6413919
+Curr avg per joint loss (mm): 46
+Avg overall network loss: 54
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/3
+Batch idx: 180/428
+Curr avg overall network loss: 5956315
+Curr avg per joint loss (mm): 43
+Avg overall network loss: 54
+-----------------------------------------------------
+Number of epochs to train: 3
+Network class: HNet
+Length of dataset: 1712
+Number of batches: 428
+Number of epochs to train: 10
+Network class: HNet
+Length of dataset: 1712
+Number of batches: 428

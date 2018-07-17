@@ -171,10 +171,19 @@ class Synthom_dataset(Dataset):
                 ix += 1
                 continue
             folder_name = root.split('/')[-1]
-            hand_gt_filepath = root + '/' + folder_name[:-1] + '_right_hand_conv.txt'
-            obj_gt_filepath = root + '/' + folder_name[:-1] + '_obj_pose_conv.txt'
+            idx_num = 0
+            for char_ in folder_name:
+                if char_.isdigit():
+                    break
+                idx_num += 1
+            aa = len(folder_name)-idx_num
+            obj_name = folder_name[:-aa]
+            hand_gt_filepath = root + '/' + obj_name + '_right_hand_conv.txt'
+            obj_gt_filepath = root + '/' + obj_name + '_obj_pose_conv.txt'
             with open(hand_gt_filepath) as hand_file:
+                print(hand_gt_filepath)
                 with open(obj_gt_filepath) as obj_file:
+                    print(obj_gt_filepath)
                     next(hand_file)
                     next(hand_file)
                     next(hand_file)
@@ -187,9 +196,9 @@ class Synthom_dataset(Dataset):
                         line_split = obj_line.split(',')
                         obj_frame_num = int(line_split[0])
 
-                        self.rgb_filepath_of_idx[idx_elem] = root + '/' + folder_name[:-1] +\
+                        self.rgb_filepath_of_idx[idx_elem] = root + '/' + obj_name +\
                                                              '_rgb_' + str(obj_frame_num) + '.png'
-                        self.depth_filepath_of_idx[idx_elem] = root + '/' + folder_name[:-1] +\
+                        self.depth_filepath_of_idx[idx_elem] = root + '/' + obj_name +\
                                                              '_depth_' + str(obj_frame_num) + '.png'
 
 
@@ -203,11 +212,7 @@ class Synthom_dataset(Dataset):
                             for i in range(self.num_hand_bones):
                                 hand_file.readline()
                             continue
-                        for i in range(6):
-                            if obj_pose[i] < min_obj_pose[i]:
-                                min_obj_pose[i] = obj_pose[i]
-                            if obj_pose[i] > max_obj_pose[i]:
-                                max_obj_pose[i] = obj_pose[i]
+
 
                         self.obj_gt_of_idx[idx_elem] = (obj_id, obj_pose, obj_uv)
 
@@ -215,8 +220,9 @@ class Synthom_dataset(Dataset):
                         hand_uv = np.zeros((self.num_hand_bones, 2))
                         for i in range(self.num_hand_bones):
                             hand_line = hand_file.readline()
+                            print(hand_line)
                             if hand_line == '':
-                                raise Exception('Reached en of hand file')
+                                raise Exception('Reached end of hand file before end of object file')
                             line_split = hand_line.split(',')
                             hand_frame_num = int(line_split[0])
                             if not hand_frame_num == obj_frame_num:
@@ -236,6 +242,21 @@ class Synthom_dataset(Dataset):
                         hand_pose *= 10
                         self.hand_gt_of_idx[idx_elem] = (hand_root, hand_pose, hand_uv)
                         obj_line = obj_file.readline()
+
+                        for i in range(3):
+                            obj_rel_pos = (obj_pose[i] * 10) - hand_root[i]
+                            if obj_rel_pos < min_obj_pose[i]:
+                                min_obj_pose[i] = obj_rel_pos
+                            if obj_rel_pos > max_obj_pose[i]:
+                                max_obj_pose[i] = obj_rel_pos
+
+                        for i in range(3):
+                            idx = i + 3
+                            if obj_pose[idx] < min_obj_pose[idx]:
+                                min_obj_pose[idx] = obj_pose[idx]
+                            if obj_pose[idx] > max_obj_pose[idx]:
+                                max_obj_pose[idx] = obj_pose[idx]
+
                         idx_elem += 1
         self.min_obj_pose = np.array(min_obj_pose)
         self.max_obj_pose = np.array(max_obj_pose)
@@ -258,7 +279,7 @@ class Synthom_dataset(Dataset):
         rgbd_image[:, :, 3] = depth
         return rgbd_image
 
-    def __init__(self, root_folder, load=True, type='train', train_split_prop=0.75):
+    def __init__(self, root_folder, load=True, type='train', train_split_prop=0.8):
         self.root_folder = root_folder
         if type == 'test':
             print('Loading test set form file')
@@ -309,6 +330,11 @@ class Synthom_dataset(Dataset):
     def __getitem__(self, idx):
         idx = self.get_rand_idx[idx]
 
+        hand_gt = self.hand_gt_of_idx[idx]
+        hand_root, hand_pose, hand_uv = hand_gt
+        hand_pose = torch.from_numpy(hand_pose).float()
+        target_hand_pose = hand_pose.reshape((hand_pose.shape[0] * 3,))
+
         obj_gt = self.obj_gt_of_idx[idx]
         obj_id, obj_pose, obj_uv = obj_gt
         obj_id_prob = np.zeros((self.num_objs,))
@@ -323,10 +349,7 @@ class Synthom_dataset(Dataset):
         obj_position = torch.from_numpy(obj_position).float()
         obj_pose = torch.cat((obj_position, obj_uv, obj_orient), 0)
 
-        hand_gt = self.hand_gt_of_idx[idx]
-        hand_root, hand_pose, hand_uv = hand_gt
-        hand_pose = torch.from_numpy(hand_pose).float()
-        target_hand_pose = hand_pose.reshape((hand_pose.shape[0] * 3,))
+
 
         rgbd = self.load_rgbd(idx)
         # plot_image(rgbd, title=str(idx))

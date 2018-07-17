@@ -86,7 +86,9 @@ def load_checkpoint(filename, NetworkClass, params_dict, use_cuda=False):
     optimizer.load_state_dict(optimizer_state_dict)
     del optimizer_state_dict, model_state_dict
     start_batch_idx = torch_file['batch_idx'] + 1
-    return model, optimizer, start_batch_idx
+    start_epoch = torch_file['curr_epoch']
+    train_ix = torch_file['train_ix']
+    return model, optimizer, start_batch_idx, start_epoch, train_ix
 
 # num_joints should be one less (no hand root)
 def calc_avg_joint_loss(output_main, target_joints, num_joints=15):
@@ -145,3 +147,10 @@ def plot_3D_joints(joints_vec, num_joints=16, title='', fig=None, ax=None, color
 
 def show():
     plt.show()
+
+def print_file(txt, filepath):
+    print(txt)
+    with open(filepath, "a") as f:
+        f.write(txt)
+        f.write('\n')
+

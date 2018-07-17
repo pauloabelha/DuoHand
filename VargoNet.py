@@ -146,7 +146,7 @@ class VargoNet(nn.Module):
     WEIGHT_LOSS_MAIN = 1
 
     # if RGB, 3; if RGB-D, 4
-    in_channels = 4
+    in_channels = 3
 
     def __init__(self, params_dict):
         super(VargoNet, self).__init__()
