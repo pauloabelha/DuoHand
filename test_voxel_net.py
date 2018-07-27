@@ -1,9 +1,7 @@
 import synthom_handler
 from torch.autograd import Variable
-from HNet import HNet
-from HONet import HONet
+from VoxHonet import VoxHonet
 from util import *
-from scipy import misc
 
 
 def get_obj_pose(obj_real_pose):
@@ -45,12 +43,20 @@ def plot_image(data, title='', fig=None):
         plt.title(title)
     return fig
 
-use_rgbd = False
+voxel_grid_side = 50
+use_rgbd = True
 obj_channel = True
-NetworkClass = HONet
+NetworkClass = VoxHonet
 dataset_folder = '/home/paulo/josh17-2/'
-#net_filepath = '/home/paulo/DuoHand/' + 'trained_' + NetworkClass.__name__ + '.pth.tar'
-net_filepath = '/home/paulo/DuoHand/' + 'trained_honet_rgb_obj_channel.pth.tar'
+
+if use_rgbd:
+    rgbd_str = 'rgbd'
+else:
+    rgbd_str = 'rgb'
+
+net_name = 'VoxHonet'
+net_filepath = 'trained_' + net_name + '_' + rgbd_str + '.pth.tar'
+
 use_cuda = False
 batch_size = 1
 num_joints = 16
@@ -68,9 +74,12 @@ length_dataset = len(synthom_loader)
 print('Number of batches: {}'.format(length_dataset))
 
 model_params = {'num_joints': num_joints,
+              'dataset_folder': dataset_folder,
               'use_cuda': use_cuda,
+              'voxel_grid_side': voxel_grid_side,
               'use_rgbd': use_rgbd,
-              'obj_channel': obj_channel}
+              'obj_channel': False}
+
 model, _, _, _, _ = load_checkpoint(net_filepath, NetworkClass, params_dict=model_params, use_cuda=use_cuda)
 
 if use_cuda:
@@ -149,7 +158,7 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
     accum_report_loss += report_loss
     accum_report_tot_loss += report_loss
 
-    if report_loss > 30:
+    if report_loss > 1000:
         plot_image(rgbd.data.numpy()[0, 0:3, :, :])
         show()
         plt.show()

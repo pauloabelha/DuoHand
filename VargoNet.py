@@ -135,7 +135,10 @@ def cudafy(object, use_cuda):
         return object
 
 class VargoNet(nn.Module):
-
+    obj_channel = False
+    use_rgbd = True
+    # if RGB, 3; if RGB-D, 4
+    in_channels = 4
     cross_entropy = True
     heatmap_ixs = range(3)
     num_heatmaps = 16
@@ -145,10 +148,17 @@ class VargoNet(nn.Module):
     WEIGHT_LOSS_INTERMED3 = 0.5
     WEIGHT_LOSS_MAIN = 1
 
-    # if RGB, 3; if RGB-D, 4
-    in_channels = 3
+
 
     def __init__(self, params_dict):
+        self.use_rgbd = params_dict['use_rgbd']
+        if self.use_rgbd:
+            self.in_channels = 4
+        else:
+            self.in_channels = 3
+        if params_dict['obj_channel']:
+            self.obj_channel = True
+            self.in_channels += 10
         super(VargoNet, self).__init__()
         # initialize variables
         self.use_cuda = parse_model_param(params_dict, 'use_cuda', default_value=False)

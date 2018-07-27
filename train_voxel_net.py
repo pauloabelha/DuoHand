@@ -1,7 +1,6 @@
 import synthom_handler
 from torch.autograd import Variable
-from HNet import HNet
-from HONet import HONet
+from VoxHonet import VoxHonet
 from util import *
 import argparse
 import os
@@ -15,33 +14,21 @@ save_file_interv = 100
 parser = argparse.ArgumentParser(description='')
 parser.add_argument('-d', dest='dataset_folder', default='/home/paulo/josh16/', required=True, help='Root folder for dataset')
 parser.add_argument('-e', dest='num_epochs', type=int, required=True, help='Number of epochs to train')
-parser.add_argument('-c', dest='net_class', default='', required=True, help='Network class (hnet or honet)')
+parser.add_argument('-v', dest='voxel_grid_side', type=int, required=True, help='Size of the side of cubic voxel grid')
 parser.add_argument('--load_dataset', dest='load_dataset', action='store_true', default=True, help='Whether to use cuda for training')
 parser.add_argument('--use_cuda', dest='use_cuda', action='store_true', default=False, help='Whether to use cuda for training')
 parser.add_argument('--rgbd', dest='use_rgbd', action='store_true', default=False, help='Whether to use RGB-D (or RGB is false)')
-parser.add_argument('--obj_channel', dest='obj_channel', action='store_true', default=False, help='Whether to use RGB-D (or RGB is false)')
 args = parser.parse_args()
-
-if args.net_class == 'hnet':
-    NetworkClass = HNet
-    args.obj_channel = False
-elif args.net_class == 'honet':
-    NetworkClass = HONet
-else:
-    raise 1
 
 if args.use_rgbd:
     rgbd_str = 'rgbd'
 else:
     rgbd_str = 'rgb'
 
-if args.obj_channel:
-    obj_channel_str = '_obj_channel'
-else:
-    obj_channel_str = ''
+net_name = 'VoxHonet'
+args.net_filename = 'trained_' + net_name + '_' + rgbd_str + '.pth.tar'
+args.output_filepath = 'output_' + net_name + '_' + rgbd_str + '.txt'
 
-args.net_filename = 'trained_' + args.net_class + '_' + rgbd_str + obj_channel_str + '.pth.tar'
-args.output_filepath = 'output_' + args.net_class + '_' + rgbd_str + obj_channel_str + '.txt'
 
 synthom_dataset = synthom_handler.Synthom_dataset(args.dataset_folder, type='train', load=args.load_dataset)
 synthom_loader = torch.utils.data.DataLoader(
@@ -51,30 +38,32 @@ synthom_loader = torch.utils.data.DataLoader(
 
 print_file('-------------------------------------------------------------', args.output_filepath)
 print_file('-------------------------------------------------------------', args.output_filepath)
-print_file('Using RGBD: ' + str(args.use_rgbd), args.output_filepath)
 print_file('Number of epochs to train: ' + str(args.num_epochs), args.output_filepath)
-print_file('Network class: ' + str(NetworkClass.__name__), args.output_filepath)
+print_file('Network class: ' + net_name, args.output_filepath)
 print_file('Length of dataset: ' + str(len(synthom_loader) * batch_size), args.output_filepath)
 print_file('Network file name: ' + args.net_filename, args.output_filepath)
 print_file('Output file path: ' + args.output_filepath, args.output_filepath)
 length_dataset = len(synthom_loader)
 print_file('Number of batches: ' + str(length_dataset), args.output_filepath)
 
+
+
 net_params = {'num_joints': num_joints,
+              'dataset_folder': args.dataset_folder,
               'use_cuda': args.use_cuda,
+              'voxel_grid_side': args.voxel_grid_side,
               'use_rgbd': args.use_rgbd,
-              'obj_channel': args.obj_channel}
-start_epoch = 0
+              'obj_channel': False}
 if load_net:
-    net, optimizer, start_batch_idx, start_epoch, train_ix = load_checkpoint(args.net_filename, NetworkClass,
+    net, optimizer, start_batch_idx, start_epoch, train_ix = load_checkpoint(args.net_filename, VoxHonet,
                                                       params_dict=net_params,
                                                       use_cuda=args.use_cuda)
 else:
-    net = NetworkClass(net_params)
+    net = VoxHonet(net_params)
+    net = load_resnet_weights_into_net(net, args.use_rgbd, False, args.output_filepath)
     optimizer = get_adadelta(net)
+    start_epoch = 0
     start_batch_idx = 0
-
-net = load_resnet_weights_into_net(net, args.use_rgbd, args.obj_channel, args.output_filepath)
 
 if args.use_cuda:
     torch.set_default_tensor_type('torch.cuda.FloatTensor')

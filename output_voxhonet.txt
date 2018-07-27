@@ -1,0 +1,24 @@
+-------------------------------------------------------------
+-------------------------------------------------------------
+Number of epochs to train: 10
+Network class: voxhonet
+Length of dataset: 6672
+Network file name: trained_voxhonet.pth.tar
+Output file path: output_voxhonet.txt
+Number of batches: 1668
+-------------------------------------------------------------
+-------------------------------------------------------------
+Number of epochs to train: 10
+Network class: voxhonet
+Length of dataset: 6672
+Network file name: trained_voxhonet.pth.tar
+Output file path: output_voxhonet.txt
+Number of batches: 1668
+-------------------------------------------------------------
+-------------------------------------------------------------
+Number of epochs to train: 10
+Network class: voxhonet
+Length of dataset: 6672
+Network file name: trained_voxhonet.pth.tar
+Output file path: output_voxhonet.txt
+Number of batches: 1668

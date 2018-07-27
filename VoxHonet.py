@@ -4,12 +4,27 @@ from VargoNet import VargoNet as VargoNet_class
 import torch.nn as nn
 from VargoNet import cudafy
 import numpy as np
+from pointcloud import PointCloud
+from pyvox import voxelize
+import my_linalg
 
-class HONet(VargoNet_class):
+class VoxHonet(VargoNet_class):
+    max_obj_size = 0.3 # in m
     innerprod1_size = 256 * 16 * 16
     crop_res = (128, 128)
     size_obj_input = 4 + 3 + 3
-    #innerprod1_size = 65536
+    voxel_grid_side = 50
+    pcl_names = ['crackers', 'mustard', 'orange', 'woodblock']
+    pcls = []
+
+
+
+    def load_pcls(self, dataset_folder):
+        self.pcls = []
+        max_size = 0.22
+        for i in range(len(self.pcl_names)):
+            filepath = dataset_folder + 'pcls/' + self.pcl_names[i] + '.ply'
+            self.pcls.append(PointCloud.from_file(filepath))
 
     def map_out_to_loss(self, innerprod1_size):
         return cudafy(nn.Linear(in_features=innerprod1_size, out_features=200), self.use_cuda)
@@ -20,10 +35,10 @@ class HONet(VargoNet_class):
             self.use_cuda)
 
     def __init__(self, params_dict):
-        super(HONet, self).__init__(params_dict)
+        super(VoxHonet, self).__init__(params_dict)
 
-        if self.obj_channel:
-            self.size_obj_input = 0
+        self.voxel_grid_side = params_dict['voxel_grid_side']
+        self.load_pcls(params_dict['dataset_folder'])
 
         self.num_joints = 16
         self.main_loss_conv = cudafy(VargoNet.VargoNetConvBlock(
@@ -52,37 +67,39 @@ class HONet(VargoNet_class):
         self.innerproduct2_join_main = cudafy(
             nn.Linear(in_features=200, out_features=200), self.use_cuda)
 
-        if not self.obj_channel:
-            self.obj0 = cudafy(
-                nn.Linear(in_features=self.size_obj_input, out_features=self.size_obj_input), self.use_cuda)
-            self.obj1 = cudafy(
-                nn.Linear(in_features=self.size_obj_input, out_features=self.size_obj_input), self.use_cuda)
-            self.obj2 = cudafy(
-                nn.Linear(in_features=self.size_obj_input, out_features=self.size_obj_input), self.use_cuda)
-            self.merge_hand_obj = cudafy(
-                nn.Linear(in_features=200+self.size_obj_input, out_features=200+self.size_obj_input), self.use_cuda)
+        self.obj_voxel_in = cudafy(nn.Conv3d(in_channels=1, out_channels=1, kernel_size=6, stride=2), self.use_cuda)
+        self.obj_conv3d0 = cudafy(nn.Conv3d(in_channels=1, out_channels=1, kernel_size=5, stride=2), self.use_cuda)
+        self.obj_conv3d1 = cudafy(nn.Conv3d(in_channels=1, out_channels=1, kernel_size=5), self.use_cuda)
 
         self.funnel_in0 = cudafy(
-            nn.Linear(in_features=200+self.size_obj_input, out_features=100), self.use_cuda)
+            nn.Linear(in_features=200+216, out_features=100), self.use_cuda)
         self.funnel_in1 = cudafy(
+            nn.Linear(in_features=100, out_features=100), self.use_cuda)
+        self.funnel_in2 = cudafy(
             nn.Linear(in_features=100, out_features=(self.num_joints - 1) * 3), self.use_cuda)
 
 
+    def get_obj_voxel(self, obj_id, obj_pose):
+        voxel_grid = np.zeros((obj_id.shape[0], 1, self.voxel_grid_side, self.voxel_grid_side, self.voxel_grid_side))
+        for i in range(obj_id.shape[0]):
+            pcl = self.pcls[np.argmax(obj_id[i])]
+            rot_mtx = my_linalg.get_eul_rot_mtx(obj_pose[i][3:], axes_order='xyz')
+            pcl.vertices = np.dot(pcl.vertices, rot_mtx)
+            voxel_grid[i, 0] = voxelize(pcl.vertices, max_size=self.max_obj_size, voxel_grid_side=self.voxel_grid_side)
+        return voxel_grid
 
     def forward(self, x):
         (rgbd, obj_id, obj_pose) = x
 
-        if self.obj_channel:
-            obj_in = torch.cat((obj_id, obj_pose), 1)
-            obj_channels = np.zeros((rgbd.shape[0], 10, rgbd.shape[2], rgbd.shape[3]))
-            for batch_idx in range(rgbd.shape[0]):
-                for obj_channel_idx in range(10):
-                    obj_channels[batch_idx, obj_channel_idx, :, :] = obj_in[batch_idx, obj_channel_idx]
-            obj_channels = torch.from_numpy(obj_channels).float()
-            if self.use_cuda:
-                obj_channels = obj_channels.cuda()
-            rgbd = torch.cat((rgbd, obj_channels), 1)
-
+        voxel_grid = self.get_obj_voxel(obj_id, obj_pose)
+        voxel_grid = torch.from_numpy(voxel_grid).float()
+        if self.use_cuda:
+            voxel_grid = voxel_grid.cuda()
+        out_obj = self.obj_voxel_in(voxel_grid)
+        out_obj = self.obj_conv3d0(out_obj)
+        out_obj = self.obj_conv3d1(out_obj)
+        out_obj_size = out_obj.shape[1] * out_obj.shape[2] * out_obj.shape[3] * out_obj.shape[4]
+        out_obj_out = out_obj.view(-1, out_obj_size)
 
         out_intermed_hm1, out_intermed_hm2, out_intermed_hm3, conv4fout, \
         res3aout, res4aout, conv4eout = self.forward_subnet(rgbd)
@@ -105,23 +122,11 @@ class HONet(VargoNet_class):
         innerprod1_size = conv4fout.shape[1] * conv4fout.shape[2] * conv4fout.shape[3]
         out_intermed_j_main = conv4fout.view(-1, innerprod1_size)
         out_intermed_j_main = self.innerproduct1_joint_main(out_intermed_j_main)
-        #out_intermed_j_main = self.innerproduct2_join_main(out_intermed_j_main)
 
-        if self.obj_channel:
-            joints_out = self.funnel_in0(out_intermed_j_main)
-            joints_out = self.funnel_in1(joints_out)
-        else:
-            # put object in the net
-            obj_in = torch.cat((obj_id, obj_pose), 1)
-            obj_out = self.obj0(obj_in)
-            obj_out = self.obj1(obj_out)
-            obj_out = self.obj2(obj_out)
-
-            # merge hand and object
-            obj_hand_out = torch.cat((out_intermed_j_main, obj_out), 1)
-            obj_hand_out = self.merge_hand_obj(obj_hand_out)
-            obj_hand_out = self.funnel_in0(obj_hand_out)
-            joints_out = self.funnel_in1(obj_hand_out)
+        out_hand_obj = torch.cat((out_obj_out, out_intermed_j_main), 1)
+        joints_out = self.funnel_in0(out_hand_obj)
+        joints_out = self.funnel_in1(joints_out)
+        joints_out = self.funnel_in2(joints_out)
 
         return out_intermed_hm1, out_intermed_hm2, out_intermed_hm3, out_intermed_hm_main,\
                out_intermed_j1, out_intermed_j2, out_intermed_j3, joints_out

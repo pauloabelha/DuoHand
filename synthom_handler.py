@@ -1,12 +1,10 @@
 # handler for ECCV HANDS 2018 Workshop Synthom Dataset
 
-import torch
 import pickle
-import numpy as np
 from scipy import misc
 from torch.utils.data.dataset import Dataset
 import os
-from matplotlib import pyplot as plt
+from util import *
 
 def numpy_to_plottable_rgb(numpy_img):
     img = numpy_img
@@ -209,18 +207,17 @@ class Synthom_dataset(Dataset):
                         if obj_pose[0] < 0 or obj_pose[1] < 0 or obj_pose[2] < 270 \
                                 or obj_uv[0] < 0 or obj_uv[1] < 0:
                             obj_line = obj_file.readline()
+
                             for i in range(self.num_hand_bones):
-                                hand_file.readline()
+                                hand_line = hand_file.readline()
                             continue
 
 
-                        self.obj_gt_of_idx[idx_elem] = (obj_id, obj_pose, obj_uv)
 
                         hand_pose = np.zeros((self.num_hand_bones, 3))
                         hand_uv = np.zeros((self.num_hand_bones, 2))
                         for i in range(self.num_hand_bones):
                             hand_line = hand_file.readline()
-                            print(hand_line)
                             if hand_line == '':
                                 raise Exception('Reached end of hand file before end of object file')
                             line_split = hand_line.split(',')
@@ -243,12 +240,12 @@ class Synthom_dataset(Dataset):
                         self.hand_gt_of_idx[idx_elem] = (hand_root, hand_pose, hand_uv)
                         obj_line = obj_file.readline()
 
+                        obj_pose[0:3] = (obj_pose[0:3] * 10) - hand_root
                         for i in range(3):
-                            obj_rel_pos = (obj_pose[i] * 10) - hand_root[i]
-                            if obj_rel_pos < min_obj_pose[i]:
-                                min_obj_pose[i] = obj_rel_pos
-                            if obj_rel_pos > max_obj_pose[i]:
-                                max_obj_pose[i] = obj_rel_pos
+                            if obj_pose[i] < min_obj_pose[i]:
+                                min_obj_pose[i] = obj_pose[i]
+                            if obj_pose[i] > max_obj_pose[i]:
+                                max_obj_pose[i] = obj_pose[i]
 
                         for i in range(3):
                             idx = i + 3
@@ -256,6 +253,9 @@ class Synthom_dataset(Dataset):
                                 min_obj_pose[idx] = obj_pose[idx]
                             if obj_pose[idx] > max_obj_pose[idx]:
                                 max_obj_pose[idx] = obj_pose[idx]
+
+
+                        self.obj_gt_of_idx[idx_elem] = (obj_id, obj_pose, obj_uv)
 
                         idx_elem += 1
         self.min_obj_pose = np.array(min_obj_pose)
@@ -279,10 +279,10 @@ class Synthom_dataset(Dataset):
         rgbd_image[:, :, 3] = depth
         return rgbd_image
 
-    def __init__(self, root_folder, load=True, type='train', train_split_prop=0.8):
+    def __init__(self, root_folder, load=True, type='train', train_split_prop=0.9):
         self.root_folder = root_folder
         if type == 'test':
-            print('Loading test set form file')
+            print('Loading test set from file')
             with open(root_folder + 'dataset.pkl', 'rb') as handle:
                 dataset_dict = pickle.load(handle)
                 self.train_split_size = dataset_dict['train_split_size']
@@ -341,26 +341,34 @@ class Synthom_dataset(Dataset):
         obj_id_prob[obj_id] = 1.0
         obj_id_prob = torch.from_numpy(obj_id_prob).float()
         obj_orient = obj_pose[3:].reshape((3,))
-        obj_orient = (obj_orient + 180.) / 360.
+        #obj_orient = (obj_orient + 180.) / 360.
         obj_orient = torch.from_numpy(obj_orient).float()
+        obj_uv[0] = obj_uv[0] / 640
+        obj_uv[1] = obj_uv[1] / 480
         obj_uv = torch.from_numpy(obj_uv).float()
         obj_position = obj_pose[0:3].reshape((3,))
-        obj_position = (self.max_obj_pose[0:3] - obj_position) / (self.max_obj_pose[0:3] - self.min_obj_pose[0:3])
+        #print(self.min_obj_pose)
+        #print(self.max_obj_pose)
+        obj_position = (obj_position - self.min_obj_pose[0:3]) / (self.max_obj_pose[0:3] - self.min_obj_pose[0:3])
         obj_position = torch.from_numpy(obj_position).float()
-        obj_pose = torch.cat((obj_position, obj_uv, obj_orient), 0)
-
-
+        obj_pose = torch.cat((obj_position, obj_orient), 0)
 
         rgbd = self.load_rgbd(idx)
-        # plot_image(rgbd, title=str(idx))
-        # plt.show()
+        #plot_image(rgbd, title=str(idx))
+        #plt.show()
         # rgbd = change_res_image(rgbd, new_res=(128, 128))
         rgbd = rgbd.swapaxes(1, 2).swapaxes(0, 1)
         rgbd, crop_coords, target_heatmaps, _ = crop_image_get_labels(rgbd, hand_uv)
+
+        #plot_image(rgbd, title=str(idx))
+        #plt.show()
+        #plot_3D_joints(target_hand_pose)
+        #show()
+
         rgbd = torch.from_numpy(rgbd).float()
         target_heatmaps = torch.from_numpy(target_heatmaps).float()
 
-        return (rgbd, obj_id_prob, obj_pose), (target_hand_pose, target_heatmaps)
+        return (rgbd, obj_id_prob, obj_pose, hand_root), (target_hand_pose, target_heatmaps)
 
     def __len__(self):
         return self.length
