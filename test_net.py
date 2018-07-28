@@ -46,11 +46,11 @@ def plot_image(data, title='', fig=None):
     return fig
 
 use_rgbd = False
-obj_channel = True
-NetworkClass = HONet
+obj_channel = False
+NetworkClass = HNet
 dataset_folder = '/home/paulo/josh17-2/'
 #net_filepath = '/home/paulo/DuoHand/' + 'trained_' + NetworkClass.__name__ + '.pth.tar'
-net_filepath = '/home/paulo/DuoHand/' + 'trained_honet_rgb_obj_channel.pth.tar'
+net_filepath = '/home/paulo/DuoHand/' + 'trained_hnet_rgb.pth.tar'
 use_cuda = False
 batch_size = 1
 num_joints = 16
@@ -149,7 +149,7 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
     accum_report_loss += report_loss
     accum_report_tot_loss += report_loss
 
-    if report_loss > 30:
+    if report_loss > 1000:
         plot_image(rgbd.data.numpy()[0, 0:3, :, :])
         show()
         plt.show()
@@ -174,7 +174,7 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
         print('Average (batch): {}'.format(np.mean(np.array(avg_loss_accum))))
         print('Stddev (batch): {}'.format(np.mean(np.std(avg_loss_accum))))
         print('Batch idx: {}/{}'.format(batch_idx, length_dataset))
-        print('Mean joint loss (mm): {}'.format(int(np.mean(loss_list))))
+        print('Mean joint loss (mm): {}'.format(np.mean(loss_list)))
         print('Stddev joint loss (mm): {}'.format(int(np.std(loss_list))))
         print('Per Joint:')
         for i in range(15):

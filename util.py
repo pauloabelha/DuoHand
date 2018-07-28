@@ -209,7 +209,7 @@ def load_resnet_weights_into_net(net, use_rgbd, obj_channel, filepath):
     if obj_channel:
         n_extra_channels = 10
     if use_rgbd:
-        n_extra_channels = 1
+        n_extra_channels += 1
     if obj_channel or use_rgbd:
         float_tensor = np.random.normal(np.mean(resnet_weight),
                                         np.std(resnet_weight),

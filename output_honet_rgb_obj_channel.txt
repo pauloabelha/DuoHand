@@ -12236,3 +12236,56 @@ Model saved
 Saving final model to disk...
 Model saved
 -----------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+Using RGBD: False
+Number of epochs to train: 10
+Network class: HONet
+Length of dataset: 6672
+Network file name: trained_honet_rgb_obj_channel.pth.tar
+Output file path: output_honet_rgb_obj_channel.txt
+Number of batches: 1668
+Loading RESNet50...
+Done loading RESNet50
+Initializaing network with RESNet50...
+Done initializaing network with RESNet50
+Deleting resnet from memory
+Started training: logging interval is every 10 batches
+-------------------------------------------------------------
+-------------------------------------------------------------
+Using RGBD: False
+Number of epochs to train: 10
+Network class: HONet
+Length of dataset: 6672
+Network file name: trained_honet_rgb_obj_channel.pth.tar
+Output file path: output_honet_rgb_obj_channel.txt
+Number of batches: 1668
+Loading RESNet50...
+-------------------------------------------------------------
+-------------------------------------------------------------
+Using RGBD: False
+Number of epochs to train: 10
+Network class: HONet
+Length of dataset: 6672
+Network file name: trained_honet_rgb_obj_channel.pth.tar
+Output file path: output_honet_rgb_obj_channel.txt
+Number of batches: 1668
+-------------------------------------------------------------
+-------------------------------------------------------------
+Using RGBD: False
+Number of epochs to train: 10
+Network class: HONet
+Length of dataset: 6672
+Network file name: trained_honet_rgb_obj_channel.pth.tar
+Output file path: output_honet_rgb_obj_channel.txt
+Number of batches: 1668
+-------------------------------------------------------------
+-------------------------------------------------------------
+Using RGBD: False
+Number of epochs to train: 10
+Network class: HONet
+Length of dataset: 6672
+Network file name: trained_honet_rgb_obj_channel.pth.tar
+Output file path: output_honet_rgb_obj_channel.txt
+Number of batches: 1668
+Loading RESNet50...

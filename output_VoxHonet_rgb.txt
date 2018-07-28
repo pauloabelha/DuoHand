@@ -960,3 +960,45 @@ Curr avg overall network loss: 4576728
 Curr avg per joint loss (mm): 33
 Avg overall network loss: 37
 -----------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+Number of epochs to train: 10
+Network class: VoxHonet
+Length of dataset: 6672
+Network file name: trained_VoxHonet_rgb.pth.tar
+Output file path: output_VoxHonet_rgb.txt
+Number of batches: 1668
+Loading RESNet50...
+Done loading RESNet50
+Initializaing network with RESNet50...
+Done initializaing network with RESNet50
+Deleting resnet from memory
+Started training: logging interval is every 10 batches
+-------------------------------------------------------------
+-------------------------------------------------------------
+Number of epochs to train: 10
+Network class: VoxHonet
+Length of dataset: 6672
+Network file name: trained_VoxHonet_rgb.pth.tar
+Output file path: output_VoxHonet_rgb.txt
+Number of batches: 1668
+Loading RESNet50...
+Done loading RESNet50
+Initializaing network with RESNet50...
+Done initializaing network with RESNet50
+Deleting resnet from memory
+Started training: logging interval is every 10 batches
+-------------------------------------------------------------
+-------------------------------------------------------------
+Number of epochs to train: 10
+Network class: VoxHonet
+Length of dataset: 6672
+Network file name: trained_VoxHonet_rgb.pth.tar
+Output file path: output_VoxHonet_rgb.txt
+Number of batches: 1668
+Loading RESNet50...
+Done loading RESNet50
+Initializaing network with RESNet50...
+Done initializaing network with RESNet50
+Deleting resnet from memory
+Started training: logging interval is every 10 batches

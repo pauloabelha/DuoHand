@@ -1,0 +1,28 @@
+-------------------------------------------------------------
+-------------------------------------------------------------
+Number of epochs to train: 10
+Network class: VoxHonet
+Length of dataset: 6672
+Network file name: trained_VoxHonet_rgbd_obj_channel.pth.tar
+Output file path: output_VoxHonet_rgbd_obj_channel.txt
+Number of batches: 1668
+Loading RESNet50...
+Done loading RESNet50
+Initializaing network with RESNet50...
+Done initializaing network with RESNet50
+Deleting resnet from memory
+Started training: logging interval is every 10 batches
+-----------------------------------------------------
+Epoch idx: 0/10
+Batch idx: 10/1668
+Curr avg overall network loss: 12984921
+Curr avg per joint loss (mm): 102
+Avg overall network loss: 102
+-----------------------------------------------------
+-----------------------------------------------------
+Epoch idx: 0/10
+Batch idx: 20/1668
+Curr avg overall network loss: 9722447
+Curr avg per joint loss (mm): 71
+Avg overall network loss: 87
+-----------------------------------------------------

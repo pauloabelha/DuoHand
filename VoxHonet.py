@@ -18,7 +18,6 @@ class VoxHonet(VargoNet_class):
     pcls = []
 
 
-
     def load_pcls(self, dataset_folder):
         self.pcls = []
         max_size = 0.22
@@ -101,6 +100,17 @@ class VoxHonet(VargoNet_class):
         out_obj_size = out_obj.shape[1] * out_obj.shape[2] * out_obj.shape[3] * out_obj.shape[4]
         out_obj_out = out_obj.view(-1, out_obj_size)
 
+        if self.obj_channel:
+            obj_in = torch.cat((obj_id, obj_pose), 1)
+            obj_channels = np.zeros((rgbd.shape[0], 10, rgbd.shape[2], rgbd.shape[3]))
+            for batch_idx in range(rgbd.shape[0]):
+                for obj_channel_idx in range(10):
+                    obj_channels[batch_idx, obj_channel_idx, :, :] = obj_in[batch_idx, obj_channel_idx]
+            obj_channels = torch.from_numpy(obj_channels).float()
+            if self.use_cuda:
+                obj_channels = obj_channels.cuda()
+            rgbd = torch.cat((rgbd, obj_channels), 1)
+
         out_intermed_hm1, out_intermed_hm2, out_intermed_hm3, conv4fout, \
         res3aout, res4aout, conv4eout = self.forward_subnet(rgbd)
         out_intermed_hm_main = self.forward_main_loss(conv4fout)
@@ -124,6 +134,7 @@ class VoxHonet(VargoNet_class):
         out_intermed_j_main = self.innerproduct1_joint_main(out_intermed_j_main)
 
         out_hand_obj = torch.cat((out_obj_out, out_intermed_j_main), 1)
+        #out_hand_obj = out_obj_out + out_intermed_j_main
         joints_out = self.funnel_in0(out_hand_obj)
         joints_out = self.funnel_in1(joints_out)
         joints_out = self.funnel_in2(joints_out)

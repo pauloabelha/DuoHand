@@ -5,24 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0d60f2c3-e7d7-43b4-908c-8c59922a49ce" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/HNet_prior.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HORNet.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/VoxHonet.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bighand_prior.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my_linalg.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pyvox.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/refine_hnet.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_voxel_net.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/train_voxel_net.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/voxelise.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HONet.py" beforeDir="false" afterPath="$PROJECT_DIR$/HONet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/VargoNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/VargoNet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output_honet.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output_honet.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess_raw_synthom.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess_raw_synthom.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/synthom_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/synthom_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VoxHonet.py" beforeDir="false" afterPath="$PROJECT_DIR$/VoxHonet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output_VoxHonet_rgb.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output_VoxHonet_rgb.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output_VoxHonet_rgbd.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output_VoxHonet_rgbd.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output_honet_rgb_obj_channel.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output_honet_rgb_obj_channel.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_net.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_net.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_voxel_net.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_voxel_net.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/train_net.py" beforeDir="false" afterPath="$PROJECT_DIR$/train_net.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train_voxel_net.py" beforeDir="false" afterPath="$PROJECT_DIR$/train_voxel_net.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -44,22 +34,22 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="4040" />
+          <entry key="py" value="4194" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="4040" />
+          <entry key="Python" value="4194" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="37" />
+          <entry key="py" value="49" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="37" />
+          <entry key="Python" value="49" />
         </counts>
       </usages-collector>
     </session>
@@ -69,8 +59,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/train_voxel_net.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="22" selection-start-line="22" selection-end-line="29" selection-end-column="69" />
+            <state relative-caret-position="600">
+              <caret line="40" column="60" lean-forward="true" selection-start-line="40" selection-start-column="60" selection-end-line="40" selection-end-column="60" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
@@ -79,13 +69,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/synthom_handler.py">
+        <entry file="file://$PROJECT_DIR$/test_net.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="24" lean-forward="true" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
-              <folding>
-                <element signature="e#57#70#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="269">
+              <caret line="189" column="16" lean-forward="true" selection-start-line="189" selection-start-column="16" selection-end-line="189" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -93,8 +80,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test_voxel_net.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="55">
-              <caret line="51" column="3" selection-start-line="51" selection-start-column="3" selection-end-line="51" selection-end-column="3" />
+            <state relative-caret-position="465">
+              <caret line="76" column="47" lean-forward="true" selection-start-line="76" selection-start-column="47" selection-end-line="76" selection-end-column="47" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
@@ -105,11 +92,29 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/VoxHonet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1350">
-              <caret line="96" column="42" selection-start-line="96" selection-start-column="42" selection-end-line="96" selection-end-column="42" />
+            <state relative-caret-position="255">
+              <caret line="17" column="13" lean-forward="true" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/util.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="525">
+              <caret line="82" selection-start-line="82" selection-end-line="82" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/train_net.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="465">
+              <caret line="37" column="20" lean-forward="true" selection-start-line="37" selection-start-column="20" selection-end-line="37" selection-end-column="20" />
             </state>
           </provider>
         </entry>
@@ -125,8 +130,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>crop</find>
-      <find>net_filename</find>
       <find>hand_file.readline</find>
       <find>frames_to_disconsider</find>
       <find>converted_lines.append(f</find>
@@ -155,6 +158,8 @@
       <find>ax</find>
       <find>yaw</find>
       <find>Upsam</find>
+      <find>obj_cha</find>
+      <find>obj_chann</find>
     </findStrings>
     <replaceStrings>
       <replace>num_heatmaps</replace>
@@ -211,20 +216,20 @@
         <option value="$PROJECT_DIR$/HORNet.py" />
         <option value="$PROJECT_DIR$/refine_hnet.py" />
         <option value="$PROJECT_DIR$/preprocess_raw_synthom.py" />
-        <option value="$PROJECT_DIR$/train_net.py" />
         <option value="$PROJECT_DIR$/bighand_prior.py" />
-        <option value="$PROJECT_DIR$/test_net.py" />
         <option value="$PROJECT_DIR$/pcl/pointcloud.py" />
         <option value="$PROJECT_DIR$/voxelise.py" />
-        <option value="$PROJECT_DIR$/util.py" />
         <option value="$PROJECT_DIR$/pcl/pyvox.py" />
         <option value="$PROJECT_DIR$/my_linalg.py" />
         <option value="$PROJECT_DIR$/pointcloud.py" />
         <option value="$PROJECT_DIR$/ply.py" />
-        <option value="$PROJECT_DIR$/VoxHonet.py" />
-        <option value="$PROJECT_DIR$/train_voxel_net.py" />
         <option value="$PROJECT_DIR$/synthom_handler.py" />
+        <option value="$PROJECT_DIR$/util.py" />
+        <option value="$PROJECT_DIR$/train_voxel_net.py" />
+        <option value="$PROJECT_DIR$/train_net.py" />
+        <option value="$PROJECT_DIR$/test_net.py" />
         <option value="$PROJECT_DIR$/test_voxel_net.py" />
+        <option value="$PROJECT_DIR$/VoxHonet.py" />
       </list>
     </option>
   </component>
@@ -285,7 +290,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.test_voxel_net">
+  <component name="RunManager" selected="Python.train_voxel_net">
     <configuration name="bighand_prior" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="DuoHand" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -404,7 +409,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/train_voxel_net.py" />
-      <option name="PARAMETERS" value="-d $PROJECT_DIR$/../josh17-2/ -e 10 -v 50 --rgbd" />
+      <option name="PARAMETERS" value="-d $PROJECT_DIR$/../josh17-2/ -e 10 -v 50" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -466,8 +471,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.test_voxel_net" />
         <item itemvalue="Python.train_voxel_net" />
+        <item itemvalue="Python.test_voxel_net" />
         <item itemvalue="Python.voxelise" />
         <item itemvalue="Python.bighand_prior" />
         <item itemvalue="Python.preprocess_raw_synthom" />
@@ -496,7 +501,7 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32937366" />
       <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.8153348" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.3315335" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.387689" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -745,13 +750,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/HONet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="14" column="59" selection-start-line="14" selection-start-column="44" selection-end-line="14" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bighand_prior.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="409">
@@ -815,24 +813,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/VargoNet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1905">
-          <caret line="130" column="4" selection-start-line="130" selection-start-column="4" selection-end-line="130" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/voxelise.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
           <caret line="11" column="17" lean-forward="true" selection-start-line="11" selection-start-column="17" selection-end-line="11" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="150" column="32" selection-start-line="150" selection-start-column="32" selection-end-line="150" selection-end-column="32" />
         </state>
       </provider>
     </entry>
@@ -847,13 +831,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="412">
           <caret line="38" column="13" selection-start-line="38" selection-start-column="13" selection-end-line="38" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/train_net.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="67" selection-start-line="67" selection-end-line="74" selection-end-column="23" />
         </state>
       </provider>
     </entry>
@@ -885,47 +862,75 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_net.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="155" column="25" selection-start-line="155" selection-start-column="25" selection-end-line="155" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/synthom_handler.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
-          <caret line="11" column="24" lean-forward="true" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
+          <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
           <folding>
             <element signature="e#57#70#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/VoxHonet.py">
+    <entry file="file://$PROJECT_DIR$/VargoNet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1350">
-          <caret line="96" column="42" selection-start-line="96" selection-start-column="42" selection-end-line="96" selection-end-column="42" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="472">
+          <caret line="207" selection-start-line="207" selection-end-line="207" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/HONet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="83" column="53" lean-forward="true" selection-start-line="74" selection-start-column="8" selection-end-line="83" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_net.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="269">
+          <caret line="189" column="16" lean-forward="true" selection-start-line="189" selection-start-column="16" selection-end-line="189" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="82" selection-start-line="82" selection-end-line="82" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/train_voxel_net.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="22" selection-start-line="22" selection-end-line="29" selection-end-column="69" />
+        <state relative-caret-position="600">
+          <caret line="40" column="60" lean-forward="true" selection-start-line="40" selection-start-column="60" selection-end-line="40" selection-end-column="60" />
           <folding>
             <element signature="e#0#22#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/VoxHonet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="13" lean-forward="true" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/train_net.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="37" column="20" lean-forward="true" selection-start-line="37" selection-start-column="20" selection-end-line="37" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/test_voxel_net.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="55">
-          <caret line="51" column="3" selection-start-line="51" selection-start-column="3" selection-end-line="51" selection-end-column="3" />
+        <state relative-caret-position="465">
+          <caret line="76" column="47" lean-forward="true" selection-start-line="76" selection-start-column="47" selection-end-line="76" selection-end-column="47" />
           <folding>
             <element signature="e#0#22#0" expanded="true" />
           </folding>

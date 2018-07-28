@@ -44,7 +44,7 @@ def plot_image(data, title='', fig=None):
     return fig
 
 voxel_grid_side = 50
-use_rgbd = True
+use_rgbd = False
 obj_channel = True
 NetworkClass = VoxHonet
 dataset_folder = '/home/paulo/josh17-2/'
@@ -183,7 +183,7 @@ for batch_idx, (data, target) in enumerate(synthom_loader):
         print('Average (batch): {}'.format(np.mean(np.array(avg_loss_accum))))
         print('Stddev (batch): {}'.format(np.mean(np.std(avg_loss_accum))))
         print('Batch idx: {}/{}'.format(batch_idx, length_dataset))
-        print('Mean joint loss (mm): {}'.format(int(np.mean(loss_list))))
+        print('Mean joint loss (mm): {}'.format(np.mean(loss_list)))
         print('Stddev joint loss (mm): {}'.format(int(np.std(loss_list))))
         print('Per Joint:')
         for i in range(15):

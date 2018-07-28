@@ -18,6 +18,7 @@ parser.add_argument('-v', dest='voxel_grid_side', type=int, required=True, help=
 parser.add_argument('--load_dataset', dest='load_dataset', action='store_true', default=True, help='Whether to use cuda for training')
 parser.add_argument('--use_cuda', dest='use_cuda', action='store_true', default=False, help='Whether to use cuda for training')
 parser.add_argument('--rgbd', dest='use_rgbd', action='store_true', default=False, help='Whether to use RGB-D (or RGB is false)')
+parser.add_argument('--obj_channel', dest='obj_channel', action='store_true', default=False, help='Whether to use RGB-D (or RGB is false)')
 args = parser.parse_args()
 
 if args.use_rgbd:
@@ -25,9 +26,14 @@ if args.use_rgbd:
 else:
     rgbd_str = 'rgb'
 
+if args.obj_channel:
+    obj_channel_str = '_obj_channel'
+else:
+    obj_channel_str = ''
+
 net_name = 'VoxHonet'
-args.net_filename = 'trained_' + net_name + '_' + rgbd_str + '.pth.tar'
-args.output_filepath = 'output_' + net_name + '_' + rgbd_str + '.txt'
+args.net_filename = 'trained_' + net_name + '_' + rgbd_str + obj_channel_str +'.pth.tar'
+args.output_filepath = 'output_' + net_name + '_' + rgbd_str + obj_channel_str +'.txt'
 
 
 synthom_dataset = synthom_handler.Synthom_dataset(args.dataset_folder, type='train', load=args.load_dataset)
@@ -53,14 +59,14 @@ net_params = {'num_joints': num_joints,
               'use_cuda': args.use_cuda,
               'voxel_grid_side': args.voxel_grid_side,
               'use_rgbd': args.use_rgbd,
-              'obj_channel': False}
+              'obj_channel': args.obj_channel}
 if load_net:
     net, optimizer, start_batch_idx, start_epoch, train_ix = load_checkpoint(args.net_filename, VoxHonet,
                                                       params_dict=net_params,
                                                       use_cuda=args.use_cuda)
 else:
     net = VoxHonet(net_params)
-    net = load_resnet_weights_into_net(net, args.use_rgbd, False, args.output_filepath)
+    net = load_resnet_weights_into_net(net, args.use_rgbd, args.obj_channel, args.output_filepath)
     optimizer = get_adadelta(net)
     start_epoch = 0
     start_batch_idx = 0
